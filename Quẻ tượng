@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Luận Quẻ Kinh Dịch</title>
+
+<style>
+body{
+    margin:0;
+    font-family:"Times New Roman",serif;
+    color:#f5deb3;
+    text-align:center;
+    background:
+        radial-gradient(circle at center, rgba(255,255,255,0.05), transparent 60%),
+        linear-gradient(135deg,#0a0a0a,#1a1a1a);
+}
+
+body::before{
+    content:"☯";
+    font-size:300px;
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    opacity:0.05;
+    pointer-events:none;
+}
+
+h1{
+    margin-top:40px;
+    font-size:36px;
+    letter-spacing:3px;
+}
+
+.inputs{
+    margin-top:30px;
+}
+
+input{
+    width:50px;
+    height:50px;
+    font-size:22px;
+    text-align:center;
+    margin:5px;
+    background:#111;
+    color:gold;
+    border:1px solid gold;
+    border-radius:8px;
+}
+
+button{
+    margin-top:20px;
+    padding:10px 30px;
+    font-size:18px;
+    background:gold;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.result{
+    max-width:800px;
+    margin:30px auto;
+    padding:25px;
+    background:rgba(0,0,0,0.75);
+    border-radius:15px;
+    text-align:left;
+    line-height:1.8;
+}
+hr{border:1px solid rgba(255,215,0,0.3);}
+</style>
+</head>
+
+<body>
+
+<h1>☯ LUẬN QUẺ KINH DỊCH ☯</h1>
+
+<div class="inputs">
+    <p>Nhập từ dưới lên (hào 1 → hào 6)</p>
+    <input id="l1">
+    <input id="l2">
+    <input id="l3">
+    <input id="l4">
+    <input id="l5">
+    <input id="l6">
+</div>
+
+<button onclick="luanQue()">XEM QUẺ</button>
+
+<div class="result" id="result"></div>
+
+<script>
+
+function luanQue(){
+
+    let vals=[
+        l1.value,l2.value,l3.value,
+        l4.value,l5.value,l6.value
+    ];
+
+    let lines=[];
+    let moving=[];
+
+    for(let i=0;i<6;i++){
+
+        let v=parseInt(vals[i]);
+
+        if(![6,7,8,9].includes(v)){
+            result.innerHTML="Vui lòng nhập số 6,7,8,9.";
+            return;
+        }
+
+        if(v==6){ lines.push("0"); moving.push(i); }
+        if(v==7){ lines.push("1"); }
+        if(v==8){ lines.push("0"); }
+        if(v==9){ lines.push("1"); moving.push(i); }
+    }
+
+    let hex=lines.slice().reverse().join("");
+
+    let data=hexagrams[hex];
+
+    if(!data){
+        result.innerHTML="Không tìm thấy quẻ.";
+        return;
+    }
+
+    let html=`
+    <h2>${data.name}</h2>
+    <div><b>Hán tự:</b> ${data.han}</div>
+    <div><b>Thoán:</b> ${data.thoan}</div>
+    <div><b>Tượng:</b> ${data.tuong}</div>
+    <hr>
+    <div><b>Đại ý cổ:</b> ${data.co}</div>
+    <hr>
+    <div><b>Tổng quát:</b> ${data.general}</div>
+    <div><b>Công việc:</b> ${data.work}</div>
+    <div><b>Tài lộc:</b> ${data.money}</div>
+    <div><b>Tình cảm:</b> ${data.love}</div>
+    <div><b>Sức khỏe:</b> ${data.health}</div>
+    `;
+
+    if(moving.length>0){
+
+        let changed=[...lines];
+
+        moving.forEach(i=>{
+            changed[i]=changed[i]=="1"?"0":"1";
+        });
+
+        let changedHex=changed.slice().reverse().join("");
+        let changedData=hexagrams[changedHex];
+
+        if(changedData){
+            html+=`
+            <hr>
+            <h3>Quẻ biến: ${changedData.name}</h3>
+            <div><b>Ý nghĩa chuyển hóa:</b> ${changedData.general}</div>
+            `;
+        }
+    }
+
+    result.innerHTML=html;
+}
+
+/* ===== DÁN OBJECT 64 QUẺ CỦA BẠN VÀO ĐÂY ===== */
+
+const hexagrams={"111111":{
+name:"Quẻ 1 – Càn – Thiên",
+han:"乾",
+thoan:"Nguyên hanh lợi trinh.",
+tuong:"Thiên hành kiện, quân tử dĩ tự cường bất tức.",
+co:"Thuần dương, tượng Trời. Sức sáng tạo mạnh mẽ, khai mở, lãnh đạo.",
+general:"Vận cực thịnh, nên chủ động nắm cơ hội.",
+work:"Thăng tiến, hợp vai trò đứng đầu.",
+money:"Tài vận mạnh nhưng phải giữ đức.",
+love:"Chủ động sẽ thành.",
+health:"Khỏe nhưng tránh lao lực."
+},
+
+"000000":{
+name:"Quẻ 2 – Khôn – Địa",
+han:"坤",
+thoan:"Nguyên hanh, lợi tẫn mã chi trinh.",
+tuong:"Địa thế khôn, quân tử dĩ hậu đức tải vật.",
+co:"Thuần âm, tượng Đất. Bao dung, nâng đỡ, thuận theo.",
+general:"Nên nhu thuận, tích lũy.",
+work:"Hợp vai trò hỗ trợ.",
+money:"Ổn định, chậm mà chắc.",
+love:"Hiền hòa thì bền.",
+health:"Chú ý tiêu hóa."
+},
+
+"100010":{
+name:"Quẻ 3 – Truân",
+han:"屯",
+thoan:"Nguyên hanh lợi trinh.",
+tuong:"Vân lôi truân.",
+co:"Khởi đầu gian nan như mầm non gặp bão.",
+general:"Khó lúc đầu, sau sẽ thuận.",
+work:"Kiên trì vượt khó.",
+money:"Chưa nên đầu tư lớn.",
+love:"Bắt đầu khó.",
+health:"Căng thẳng."
+},
+
+"010001":{
+name:"Quẻ 4 – Mông",
+han:"蒙",
+thoan:"Hanh.",
+tuong:"Sơn hạ xuất tuyền.",
+co:"Tượng thiếu niên chưa khai trí.",
+general:"Cần học hỏi, tránh chủ quan.",
+work:"Hợp học tập.",
+money:"Chưa rõ ràng.",
+love:"Thiếu chín chắn.",
+health:"Ổn."
+},
+
+"111010":{
+name:"Quẻ 5 – Nhu",
+han:"需",
+thoan:"Hữu phu quang hanh.",
+tuong:"Vân thượng vu thiên.",
+co:"Chờ thời, tích lực.",
+general:"Chưa nên vội.",
+work:"Kiên nhẫn.",
+money:"Giữ vốn.",
+love:"Chờ thời.",
+health:"Ổn."
+},
+
+"010111":{
+name:"Quẻ 6 – Tụng",
+han:"訟",
+thoan:"Hữu phu.",
+tuong:"Thiên dữ thủy vi tụng.",
+co:"Tranh chấp, kiện tụng.",
+general:"Dễ xung đột.",
+work:"Tránh đối đầu.",
+money:"Không nên mạo hiểm.",
+love:"Cãi vã.",
+health:"Huyết áp."
+},
+
+"010000":{
+name:"Quẻ 7 – Sư",
+han:"師",
+thoan:"Trinh cát.",
+tuong:"Địa trung hữu thủy.",
+co:"Quân đội, tổ chức, kỷ luật.",
+general:"Cần lãnh đạo sáng suốt.",
+work:"Quản lý tốt sẽ thành.",
+money:"Thu nhờ tổ chức.",
+love:"Nguyên tắc.",
+health:"Ổn."
+},
+
+"000010":{
+name:"Quẻ 8 – Tỷ",
+han:"比",
+thoan:"Cát.",
+tuong:"Thủy tại địa thượng.",
+co:"Liên kết, hợp tác.",
+general:"Hợp tác có lợi.",
+work:"Tốt khi làm nhóm.",
+money:"Lợi nhờ liên minh.",
+love:"Gắn bó.",
+health:"Ổn."
+},
+
+"111011":{
+name:"Quẻ 9 – Tiểu Súc",
+han:"小畜",
+thoan:"Hanh.",
+tuong:"Phong hành thiên thượng.",
+co:"Tích lũy nhỏ.",
+general:"Chưa bứt phá.",
+work:"Tiến chậm.",
+money:"Thu nhỏ lẻ.",
+love:"Nhẹ nhàng.",
+health:"Ổn."
+},
+
+"110111":{
+name:"Quẻ 10 – Lý",
+han:"履",
+thoan:"Lý hổ vĩ.",
+tuong:"Thượng thiên hạ trạch.",
+co:"Bước đi thận trọng.",
+general:"Giữ lễ.",
+work:"Cẩn trọng.",
+money:"Tránh đầu cơ.",
+love:"Giữ mực.",
+health:"Tránh tai nạn."
+},
+
+"111000":{
+name:"Quẻ 11 – Thái",
+han:"泰",
+thoan:"Tiểu vãng đại lai.",
+tuong:"Thiên địa giao.",
+co:"Hanh thông, thịnh vượng.",
+general:"Vận rất tốt.",
+work:"Thăng tiến.",
+money:"Tài lộc tăng.",
+love:"Hòa hợp.",
+health:"Tốt."
+},
+
+"000111":{
+name:"Quẻ 12 – Bĩ",
+han:"否",
+thoan:"Bất lợi quân tử.",
+tuong:"Thiên địa bất giao.",
+co:"Bế tắc.",
+general:"Vận xấu tạm thời.",
+work:"Trì trệ.",
+money:"Giảm sút.",
+love:"Xa cách.",
+health:"Chú ý bệnh cũ."
+},
+
+"101111":{
+name:"Quẻ 13 – Đồng Nhân",
+han:"同人",
+thoan:"Hanh.",
+tuong:"Thiên hỏa đồng nhân.",
+co:"Đồng chí hướng.",
+general:"Hợp tác tốt.",
+work:"Lợi nhóm.",
+money:"Thu nhờ tập thể.",
+love:"Chân thành.",
+health:"Ổn."
+},
+
+"111101":{
+name:"Quẻ 14 – Đại Hữu",
+han:"大有",
+thoan:"Nguyên hanh.",
+tuong:"Hỏa tại thiên thượng.",
+co:"Giàu mạnh.",
+general:"Đại cát.",
+work:"Thành tựu cao.",
+money:"Dồi dào.",
+love:"Rực rỡ.",
+health:"Tốt."
+},
+
+"001000":{
+name:"Quẻ 15 – Khiêm",
+han:"謙",
+thoan:"Hanh.",
+tuong:"Địa trung hữu sơn.",
+co:"Khiêm nhường.",
+general:"Càng khiêm càng lợi.",
+work:"Không khoe khoang.",
+money:"Ổn.",
+love:"Bền.",
+health:"Tốt."
+},
+
+"000100":{
+name:"Quẻ 16 – Dự",
+han:"豫",
+thoan:"Lợi hành sư.",
+tuong:"Lôi xuất địa.",
+co:"Hứng khởi, khởi động.",
+general:"Có khí thế.",
+work:"Nên hành động.",
+money:"Có cơ hội.",
+love:"Vui vẻ.",
+health:"Ổn."
+},"100110":{
+name:"Quẻ 17 – Tùy",
+han:"隨",
+thoan:"Nguyên hanh lợi trinh.",
+tuong:"Trạch trung hữu lôi.",
+co:"Theo thời mà hành.",
+general:"Thuận theo chính đạo sẽ cát.",
+work:"Hợp thích nghi môi trường mới.",
+money:"Có lợi khi linh hoạt.",
+love:"Biết nhường nhịn.",
+health:"Ổn."
+},
+
+"011001":{
+name:"Quẻ 18 – Cổ",
+han:"蠱",
+thoan:"Nguyên hanh.",
+tuong:"Sơn hạ hữu phong.",
+co:"Sửa điều hư hỏng.",
+general:"Phải chỉnh đốn lại.",
+work:"Giải quyết tồn đọng.",
+money:"Cẩn thận thất thoát.",
+love:"Cần hóa giải hiểu lầm.",
+health:"Chú ý bệnh cũ tái phát."
+},
+
+"110000":{
+name:"Quẻ 19 – Lâm",
+han:"臨",
+thoan:"Nguyên hanh lợi trinh.",
+tuong:"Trạch thượng hữu địa.",
+co:"Đến gần, cơ hội mở ra.",
+general:"Vận đang lên.",
+work:"Có cơ hội thăng tiến.",
+money:"Tài vận tăng dần.",
+love:"Tiến triển tốt.",
+health:"Ổn."
+},
+
+"000011":{
+name:"Quẻ 20 – Quan",
+han:"觀",
+thoan:"Hanh.",
+tuong:"Phong hành địa thượng.",
+co:"Quan sát, soi xét.",
+general:"Nên nhìn lại mình.",
+work:"Thận trọng trước quyết định.",
+money:"Chưa nên đầu tư.",
+love:"Cần hiểu nhau hơn.",
+health:"Ổn."
+},
+
+"100101":{
+name:"Quẻ 21 – Phệ Hạp",
+han:"噬嗑",
+thoan:"Hanh.",
+tuong:"Lôi điện.",
+co:"Phải cắn răng vượt trở ngại.",
+general:"Giải quyết việc khó.",
+work:"Xử lý tranh chấp.",
+money:"Có lợi sau khi vượt khó.",
+love:"Vượt thử thách mới bền.",
+health:"Chú ý răng miệng."
+},
+
+"101001":{
+name:"Quẻ 22 – Bí",
+han:"賁",
+thoan:"Hanh.",
+tuong:"Sơn hạ hữu hỏa.",
+co:"Trang sức, vẻ ngoài.",
+general:"Chú trọng hình thức.",
+work:"Hợp nghệ thuật.",
+money:"Chi nhiều cho bề ngoài.",
+love:"Hào nhoáng.",
+health:"Ổn."
+},
+
+"000001":{
+name:"Quẻ 23 – Bác",
+han:"剝",
+thoan:"Bất lợi hữu du vãng.",
+tuong:"Sơn phụ địa.",
+co:"Suy tàn, bóc mòn.",
+general:"Vận xấu, nên giữ mình.",
+work:"Tránh thay đổi lớn.",
+money:"Hao hụt.",
+love:"Lạnh nhạt.",
+health:"Chú ý suy nhược."
+},
+
+"100000":{
+name:"Quẻ 24 – Phục",
+han:"復",
+thoan:"Hanh.",
+tuong:"Lôi tại địa trung.",
+co:"Quay lại, phục hồi.",
+general:"Vận hồi sinh.",
+work:"Cơ hội mới.",
+money:"Tài lộc trở lại.",
+love:"Tái hợp.",
+health:"Phục hồi tốt."
+},
+
+"100111":{
+name:"Quẻ 25 – Vô Vọng",
+han:"無妄",
+thoan:"Nguyên hanh.",
+tuong:"Thiên hạ hữu lôi.",
+co:"Chân thật, không vọng động.",
+general:"Giữ tâm chính.",
+work:"Làm đúng nguyên tắc.",
+money:"Không nên tham.",
+love:"Chân thành.",
+health:"Ổn."
+},
+
+"111001":{
+name:"Quẻ 26 – Đại Súc",
+han:"大畜",
+thoan:"Lợi trinh.",
+tuong:"Thiên tại sơn trung.",
+co:"Tích lũy lớn.",
+general:"Giữ sức chờ thời.",
+work:"Chuẩn bị lâu dài.",
+money:"Tích lũy tốt.",
+love:"Chậm mà chắc.",
+health:"Ổn."
+},
+
+"100001":{
+name:"Quẻ 27 – Di",
+han:"頤",
+thoan:"Trinh cát.",
+tuong:"Sơn hạ hữu lôi.",
+co:"Nuôi dưỡng.",
+general:"Chú trọng lời ăn tiếng nói.",
+work:"Phát triển từ nội lực.",
+money:"Thu nhập ổn.",
+love:"Cần chăm sóc nhau.",
+health:"Chú ý ăn uống."
+},
+
+"011110":{
+name:"Quẻ 28 – Đại Quá",
+han:"大過",
+thoan:"Lợi hữu du vãng.",
+tuong:"Trạch diệt mộc.",
+co:"Gánh nặng lớn.",
+general:"Áp lực cao.",
+work:"Quá tải.",
+money:"Chi nhiều.",
+love:"Mệt mỏi.",
+health:"Cẩn thận tim mạch."
+},
+
+"010010":{
+name:"Quẻ 29 – Khảm",
+han:"坎",
+thoan:"Hanh.",
+tuong:"Thủy trùng thủy.",
+co:"Hiểm nguy liên tiếp.",
+general:"Nhiều thử thách.",
+work:"Cẩn trọng.",
+money:"Tránh đầu tư.",
+love:"Tâm lý bất an.",
+health:"Chú ý thận."
+},
+
+"101101":{
+name:"Quẻ 30 – Ly",
+han:"離",
+thoan:"Lợi trinh.",
+tuong:"Hỏa trùng hỏa.",
+co:"Ánh sáng, văn minh.",
+general:"Danh tiếng tăng.",
+work:"Thuận lợi sáng tạo.",
+money:"Tài lộc nhờ danh.",
+love:"Nồng nhiệt.",
+health:"Chú ý mắt."
+},
+
+"001110":{
+name:"Quẻ 31 – Hàm",
+han:"咸",
+thoan:"Hanh.",
+tuong:"Trạch sơn.",
+co:"Cảm ứng, thu hút.",
+general:"Dễ được lòng người.",
+work:"Hợp giao tiếp.",
+money:"Thu nhờ quan hệ.",
+love:"Duyên mạnh.",
+health:"Ổn."
+},
+
+"011100":{
+name:"Quẻ 32 – Hằng",
+han:"恆",
+thoan:"Hanh.",
+tuong:"Lôi phong.",
+co:"Bền lâu.",
+general:"Kiên trì sẽ thành.",
+work:"Ổn định.",
+money:"Tích lũy dài hạn.",
+love:"Chung thủy.",
+health:"Ổn."
+},"001111":{
+name:"Quẻ 33 – Độn",
+han:"遯",
+thoan:"Hanh, tiểu lợi trinh.",
+tuong:"Thiên hạ hữu sơn.",
+co:"Rút lui đúng lúc để bảo toàn lực lượng.",
+general:"Nên tạm lùi, tránh đối đầu.",
+work:"Chưa phải thời điểm tranh quyền.",
+money:"Giữ tiền là tốt.",
+love:"Giữ khoảng cách để suy nghĩ.",
+health:"Ổn định."
+},
+
+"111100":{
+name:"Quẻ 34 – Đại Tráng",
+han:"大壯",
+thoan:"Lợi trinh.",
+tuong:"Lôi tại thiên thượng.",
+co:"Sức mạnh lớn nhưng phải chính đạo.",
+general:"Có thế mạnh, tránh nóng vội.",
+work:"Thời điểm thể hiện năng lực.",
+money:"Thu mạnh nếu kiểm soát tốt.",
+love:"Tránh áp đặt.",
+health:"Chú ý huyết áp."
+},
+
+"101000":{
+name:"Quẻ 35 – Tấn",
+han:"晉",
+thoan:"Khang hầu dụng tích mã.",
+tuong:"Hỏa xuất địa thượng.",
+co:"Tiến lên, thăng tiến rõ rệt.",
+general:"Vận đang lên.",
+work:"Dễ thăng chức.",
+money:"Tài vận tăng.",
+love:"Quan hệ tốt đẹp.",
+health:"Ổn."
+},
+
+"000101":{
+name:"Quẻ 36 – Minh Di",
+han:"明夷",
+thoan:"Lợi gian trinh.",
+tuong:"Minh nhập địa trung.",
+co:"Ánh sáng bị che, nên ẩn nhẫn.",
+general:"Thời vận chưa thuận.",
+work:"Không nên phô trương.",
+money:"Giữ an toàn.",
+love:"Dễ hiểu lầm.",
+health:"Chú ý mắt."
+},
+
+"101011":{
+name:"Quẻ 37 – Gia Nhân",
+han:"家人",
+thoan:"Lợi nữ trinh.",
+tuong:"Phong tự hỏa xuất.",
+co:"Gia đình, nội bộ hòa thuận.",
+general:"Chú trọng gia đạo.",
+work:"Hợp môi trường nhỏ, nội bộ.",
+money:"Chi tiêu cho gia đình.",
+love:"Gia đạo yên ấm.",
+health:"Ổn."
+},
+
+"110101":{
+name:"Quẻ 38 – Khuê",
+han:"睽",
+thoan:"Tiểu sự cát.",
+tuong:"Hỏa trạch khuê.",
+co:"Bất đồng, khác hướng.",
+general:"Dễ mâu thuẫn nhỏ.",
+work:"Không nên hợp tác lớn.",
+money:"Ổn định.",
+love:"Khác quan điểm.",
+health:"Ổn."
+},
+
+"001010":{
+name:"Quẻ 39 – Kiển",
+han:"蹇",
+thoan:"Lợi tây nam.",
+tuong:"Thủy sơn.",
+co:"Trở ngại, khó khăn phía trước.",
+general:"Có cản trở.",
+work:"Nên tìm người giúp.",
+money:"Chậm thu.",
+love:"Trắc trở.",
+health:"Chú ý chân."
+},
+
+"010100":{
+name:"Quẻ 40 – Giải",
+han:"解",
+thoan:"Lợi tây nam.",
+tuong:"Lôi thủy.",
+co:"Giải thoát khó khăn.",
+general:"Vận xấu sắp qua.",
+work:"Vấn đề được tháo gỡ.",
+money:"Hồi phục.",
+love:"Hòa giải.",
+health:"Tốt dần."
+},
+
+"110001":{
+name:"Quẻ 41 – Tổn",
+han:"損",
+thoan:"Hữu phu nguyên cát.",
+tuong:"Sơn trạch.",
+co:"Giảm bớt để cân bằng.",
+general:"Nên bớt tham.",
+work:"Thu gọn kế hoạch.",
+money:"Tiết kiệm.",
+love:"Hy sinh vì nhau.",
+health:"Chú ý ăn uống."
+},
+
+"100011":{
+name:"Quẻ 42 – Ích",
+han:"益",
+thoan:"Lợi hữu du vãng.",
+tuong:"Phong lôi.",
+co:"Gia tăng, có lợi.",
+general:"Có cơ hội tăng trưởng.",
+work:"Dễ mở rộng.",
+money:"Tài vận tăng.",
+love:"Phát triển.",
+health:"Tốt."
+},
+
+"111110":{
+name:"Quẻ 43 – Quải",
+han:"夬",
+thoan:"Quải dương vu vương đình.",
+tuong:"Trạch thượng hữu thiên.",
+co:"Quyết đoán, loại bỏ điều xấu.",
+general:"Cần dứt khoát.",
+work:"Giải quyết mâu thuẫn.",
+money:"Có lợi nếu mạnh tay.",
+love:"Thẳng thắn.",
+health:"Chú ý tim."
+},
+
+"011111":{
+name:"Quẻ 44 – Cấu",
+han:"姤",
+thoan:"Nữ tráng.",
+tuong:"Thiên hạ hữu phong.",
+co:"Gặp gỡ bất ngờ.",
+general:"Cơ hội đến nhanh.",
+work:"Có nhân sự mới.",
+money:"Thu bất ngờ.",
+love:"Tình cảm đột ngột.",
+health:"Ổn."
+},
+
+"000110":{
+name:"Quẻ 45 – Tụy",
+han:"萃",
+thoan:"Hanh.",
+tuong:"Trạch địa.",
+co:"Tụ họp, đông người.",
+general:"Hợp họp nhóm.",
+work:"Lợi tổ chức.",
+money:"Thu nhờ tập thể.",
+love:"Gặp gỡ vui.",
+health:"Ổn."
+},
+
+"011000":{
+name:"Quẻ 46 – Thăng",
+han:"升",
+thoan:"Nguyên hanh.",
+tuong:"Địa phong.",
+co:"Đi lên từ từ.",
+general:"Vận tăng chậm mà chắc.",
+work:"Thăng tiến dần.",
+money:"Thu đều.",
+love:"Phát triển lâu dài.",
+health:"Tốt."
+},
+
+"010110":{
+name:"Quẻ 47 – Khốn",
+han:"困",
+thoan:"Hanh, trinh đại nhân cát.",
+tuong:"Trạch vô thủy.",
+co:"Bị vây khốn.",
+general:"Khó khăn bủa vây.",
+work:"Áp lực cao.",
+money:"Thiếu hụt.",
+love:"Buồn bã.",
+health:"Mệt mỏi."
+},
+
+"011010":{
+name:"Quẻ 48 – Tỉnh",
+han:"井",
+thoan:"Cải ấp bất cải tỉnh.",
+tuong:"Thủy phong.",
+co:"Nguồn gốc bền vững.",
+general:"Ổn định nền tảng.",
+work:"Chú trọng cốt lõi.",
+money:"Thu bền.",
+love:"Ổn định.",
+health:"Tốt."
+},"101110":{
+name:"Quẻ 49 – Cách",
+han:"革",
+thoan:"Tị nhật nãi phu.",
+tuong:"Trạch hỏa cách.",
+co:"Thay đổi, cải cách mạnh mẽ.",
+general:"Đến lúc đổi mới.",
+work:"Cải tổ, thay đổi chiến lược.",
+money:"Biến động tài chính.",
+love:"Quan hệ đổi chiều.",
+health:"Chú ý tim."
+},
+
+"011101":{
+name:"Quẻ 50 – Đỉnh",
+han:"鼎",
+thoan:"Nguyên cát.",
+tuong:"Hỏa phong đỉnh.",
+co:"Ổn định sau cải cách.",
+general:"Thời vận vững chắc.",
+work:"Được trọng dụng.",
+money:"Tăng trưởng tốt.",
+love:"Ổn định.",
+health:"Khỏe."
+},
+
+"100100":{
+name:"Quẻ 51 – Chấn",
+han:"震",
+thoan:"Hanh.",
+tuong:"Lôi.",
+co:"Biến động bất ngờ.",
+general:"Có sự việc đột ngột.",
+work:"Thay đổi nhanh.",
+money:"Biến động.",
+love:"Bất ngờ.",
+health:"Chú ý thần kinh."
+},
+
+"001001":{
+name:"Quẻ 52 – Cấn",
+han:"艮",
+thoan:"Chỉ.",
+tuong:"Sơn.",
+co:"Dừng lại, tĩnh.",
+general:"Nên ngừng tiến.",
+work:"Không nên mở rộng.",
+money:"Giữ ổn định.",
+love:"Cần bình tâm.",
+health:"Chú ý lưng."
+},
+
+"001011":{
+name:"Quẻ 53 – Tiệm",
+han:"漸",
+thoan:"Nữ quy cát.",
+tuong:"Phong sơn.",
+co:"Tiến dần từng bước.",
+general:"Chậm mà chắc.",
+work:"Phát triển từ từ.",
+money:"Tăng nhẹ.",
+love:"Tình cảm sâu dần.",
+health:"Ổn."
+},
+
+"110100":{
+name:"Quẻ 54 – Quy Muội",
+han:"歸妹",
+thoan:"Hung vô du lợi.",
+tuong:"Lôi trạch.",
+co:"Quan hệ chưa đúng thời.",
+general:"Chưa thuận.",
+work:"Không nên ký kết.",
+money:"Rủi ro.",
+love:"Tình cảm lệch nhịp.",
+health:"Bất ổn nhẹ."
+},
+
+"101101":{
+name:"Quẻ 55 – Phong",
+han:"豐",
+thoan:"Hanh.",
+tuong:"Lôi hỏa.",
+co:"Thịnh vượng cực điểm.",
+general:"Đang ở đỉnh cao.",
+work:"Thành công lớn.",
+money:"Tài lộc dồi dào.",
+love:"Hạnh phúc.",
+health:"Tốt."
+},
+
+"101001":{
+name:"Quẻ 56 – Lữ",
+han:"旅",
+thoan:"Tiểu hanh.",
+tuong:"Hỏa sơn.",
+co:"Ở nhờ, tạm thời.",
+general:"Chưa ổn định.",
+work:"Dễ thay đổi chỗ.",
+money:"Không nên đầu tư lớn.",
+love:"Xa cách.",
+health:"Chú ý đi lại."
+},
+
+"011011":{
+name:"Quẻ 57 – Tốn",
+han:"巽",
+thoan:"Tiểu hanh.",
+tuong:"Phong.",
+co:"Nhu thuận, thấm dần.",
+general:"Mềm mỏng sẽ thắng.",
+work:"Đàm phán tốt.",
+money:"Thu chậm.",
+love:"Êm đềm.",
+health:"Ổn."
+},
+
+"110110":{
+name:"Quẻ 58 – Đoài",
+han:"兌",
+thoan:"Hanh.",
+tuong:"Trạch.",
+co:"Vui vẻ, giao tiếp.",
+general:"Tin vui.",
+work:"Hợp thương thuyết.",
+money:"Có lợi nhỏ.",
+love:"Vui vẻ.",
+health:"Ổn."
+},
+
+"010011":{
+name:"Quẻ 59 – Hoán",
+han:"渙",
+thoan:"Hanh.",
+tuong:"Phong thủy.",
+co:"Phân tán, giải tán.",
+general:"Cần tập trung lại.",
+work:"Dễ thay đổi nhân sự.",
+money:"Phân tán.",
+love:"Xa cách tạm thời.",
+health:"Ổn."
+},
+
+"110010":{
+name:"Quẻ 60 – Tiết",
+han:"節",
+thoan:"Hanh.",
+tuong:"Thủy trạch.",
+co:"Tiết chế, giới hạn.",
+general:"Nên kỷ luật.",
+work:"Kiểm soát chi tiết.",
+money:"Tiết kiệm là tốt.",
+love:"Giữ chừng mực.",
+health:"Ăn uống điều độ."
+},
+
+"110011":{
+name:"Quẻ 61 – Trung Phu",
+han:"中孚",
+thoan:"Hanh.",
+tuong:"Phong trạch.",
+co:"Thành tín bên trong.",
+general:"Tin tưởng sẽ thành.",
+work:"Hợp tác tốt.",
+money:"Ổn định.",
+love:"Chân thành.",
+health:"Tốt."
+},
+
+"001100":{
+name:"Quẻ 62 – Tiểu Quá",
+han:"小過",
+thoan:"Hanh.",
+tuong:"Lôi sơn.",
+co:"Việc nhỏ thì được.",
+general:"Chỉ nên làm việc nhỏ.",
+work:"Tránh dự án lớn.",
+money:"Thu nhỏ.",
+love:"Tiến chậm.",
+health:"Ổn."
+},
+
+"010101":{
+name:"Quẻ 63 – Ký Tế",
+han:"既濟",
+thoan:"Hanh tiểu.",
+tuong:"Thủy hỏa.",
+co:"Đã hoàn thành.",
+general:"Việc gần xong.",
+work:"Sắp đạt kết quả.",
+money:"Đã thu lợi.",
+love:"Ổn định.",
+health:"Tốt."
+},
+
+"101010":{
+name:"Quẻ 64 – Vị Tế",
+han:"未濟",
+thoan:"Tiểu hồ ly qua sông.",
+tuong:"Hỏa thủy.",
+co:"Chưa hoàn thành.",
+general:"Còn bước cuối.",
+work:"Cần cẩn thận.",
+money:"Chưa nên đầu tư.",
+love:"Chưa ổn định.",
+health:"Chú ý cuối kỳ."
+}
+};
+</script>
+
+</body>
+</html>
