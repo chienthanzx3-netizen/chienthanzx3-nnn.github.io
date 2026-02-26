@@ -2,285 +2,785 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Kinh Dịch Cao Cấp</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kinh Dịch 64 Quẻ – Bản Ứng Dụng</title>
 
 <style>
+
 body{
     margin:0;
-    font-family:"Times New Roman",serif;
-    background:#000;
-    color:#FFD700;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    min-height:100vh;
-}
-
-/* Nền Âm Dương + Bát Quái */
-body::before{
-    content:"";
-    position:fixed;
-    inset:0;
-    background:
-    url("https://upload.wikimedia.org/wikipedia/commons/6/6f/Bagua.svg") center/700px no-repeat,
-    url("https://upload.wikimedia.org/wikipedia/commons/3/3c/Yin_and_Yang_symbol.svg") center/350px no-repeat;
-    opacity:0.12;
-    z-index:-1;
-}
-
-.container{
-    width:95%;
-    max-width:950px;
+    font-family: serif;
+    background:#0b0b0b;
+    color:#f5e6c8;
     text-align:center;
 }
 
-/* Đồng tiền */
-.coin{
-    width:180px;
-    height:180px;
-    border-radius:50%;
-    background:
-    radial-gradient(circle at 30% 30%, #f2d16b, #b8860b 45%, #6e4e00 80%);
-    border:10px solid #4a3400;
-    position:relative;
-    margin:20px auto;
-    box-shadow:inset 0 0 30px rgba(0,0,0,0.7),
-               0 0 30px rgba(255,215,0,0.4);
+.container{
+    padding:30px;
+    max-width:1000px;
+    margin:auto;
 }
-.hole{
-    width:50px;height:50px;background:#111;
-    position:absolute;top:50%;left:50%;
-    transform:translate(-50%,-50%);
-}
-.text{
-    position:absolute;
-    font-size:28px;
-    font-weight:bold;
-    color:#3b2a00;
-}
-.top{ top:15px; left:50%; transform:translateX(-50%);}
-.bottom{ bottom:15px; left:50%; transform:translateX(-50%);}
-.left{ left:15px; top:50%; transform:translateY(-50%) rotate(-90deg);}
-.right{ right:15px; top:50%; transform:translateY(-50%) rotate(90deg);}
 
-input, select{
-    padding:10px;
-    margin:8px;
-    width:80%;
-    max-width:500px;
-    border-radius:6px;
-    border:none;
-    font-size:16px;
+h1{
+    font-size:30px;
+    letter-spacing:2px;
+    margin-bottom:20px;
+}
+
+.coin-area{
+    margin:30px 0;
+    min-height:120px;
+}
+
+.coin{
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    margin:10px;
+    font-size:12px;
+    font-weight:bold;
+    text-align:center;
+    background: radial-gradient(circle at 30% 30%, #f5d77a, #b8860b);
+    border:4px solid #5a3d00;
+    box-shadow:0 0 15px gold, inset 0 0 15px #000;
+    color:#3b2a00;
 }
 
 button{
-    padding:10px 25px;
-    font-size:18px;
-    background:#8b6508;
+    padding:12px 25px;
+    margin:10px;
+    background:#8b0000;
     color:white;
     border:none;
+    font-size:16px;
     border-radius:6px;
     cursor:pointer;
 }
-button:hover{ background:#b8860b; }
+
+button:hover{
+    background:#b22222;
+}
+
+.hexagram{
+    font-size:26px;
+    margin-top:20px;
+    letter-spacing:4px;
+}
 
 .result{
-    margin-top:25px;
+    margin-top:30px;
+    padding:25px;
+    background:rgba(20,20,20,0.95);
+    border-radius:10px;
     text-align:left;
-    line-height:1.8;
+    line-height:1.7;
 }
-.line{ font-size:22px; }
+
+.result h2{
+    color:gold;
+}
+
+.result h3{
+    color:#ffcc66;
+}
+
+hr{
+    border:1px solid #333;
+    margin:25px 0;
+}
+
 </style>
 </head>
+
 <body>
 
 <div class="container">
 
-<div class="coin">
-<div class="text top">乾</div>
-<div class="text right">隆</div>
-<div class="text bottom">通</div>
-<div class="text left">寶</div>
-<div class="hole"></div>
-</div>
+<h1>🔮 KINH DỊCH – 64 QUẺ ỨNG DỤNG 🔮</h1>
 
-<h2>Gieo Quẻ Kinh Dịch</h2>
+<div class="coin-area" id="coins"></div>
 
-<input id="question" placeholder="Nhập câu hỏi của bạn..."><br>
+<button onclick="tungXu()">Tung 3 Đồng Xu</button>
+<button onclick="resetQue()">Làm Lại</button>
 
-<select id="topic">
-<option value="general">Tổng quát</option>
-<option value="career">Công việc</option>
-<option value="money">Tài lộc</option>
-<option value="love">Tình cảm</option>
-</select><br>
-
-<button onclick="gieo()">Gieo Quẻ</button>
-
-<div id="hexagram"></div>
+<div class="hexagram" id="hexagram"></div>
 <div class="result" id="result"></div>
 
 </div>
 
 <script>
 
-/* ===== 16 QUẺ ĐẦU CÓ LUẬN CHI TIẾT ===== */
-
-const data = {
-"111111": {name:"Thuần Càn (乾為天)",
-general:"Thời điểm hành động mạnh mẽ. Chủ động sẽ có lợi.",
-career:"Thuận lợi thăng tiến nếu dám chịu trách nhiệm.",
-money:"Tài lộc tăng khi chủ động đầu tư đúng hướng.",
-love:"Cần dẫn dắt, đừng quá cứng rắn."},
-
-"000000": {name:"Thuần Khôn (坤為地)",
-general:"Nên thuận theo, kiên nhẫn chờ thời.",
-career:"Hợp vai trò hỗ trợ hơn là lãnh đạo.",
-money:"Tích lũy nhỏ nhưng bền.",
-love:"Nhu hòa sẽ giữ được tình cảm."},
-
-"010001": {name:"Thủy Sơn Kiển (水山蹇)",
-general:"Gặp trở ngại, nên đi đường vòng.",
-career:"Có cản trở, đừng đối đầu trực diện.",
-money:"Tránh đầu tư lớn.",
-love:"Cần thấu hiểu thay vì trách móc."}
-};
-
-/* ===== GIEO 6 HÀO ===== */
-
-function gieo(){
-
 let lines=[];
-for(let i=0;i<6;i++){
-let total=0;
-for(let j=0;j<3;j++){
-total += Math.random()<0.5 ? 2 : 3;
-}
-lines.push(total);
-}
 
-let bin="";
-let display="";
+function tungXu(){
 
-for(let i=5;i>=0;i--){
-let l=lines[i];
-if(l===6){ bin+="0"; display+="<div class='line'>— — (Âm động)</div>";}
-else if(l===7){ bin+="1"; display+="<div class='line'>———</div>";}
-else if(l===8){ bin+="0"; display+="<div class='line'>— —</div>";}
-else if(l===9){ bin+="1"; display+="<div class='line'>——— (Dương động)</div>";}
-}
-
-document.getElementById("hexagram").innerHTML=display;
-
-let q=data[bin];
-
-if(!q){
-document.getElementById("result").innerHTML=
-"<b>Quẻ chưa được bổ sung luận chi tiết (sẽ cập nhật ở phần tiếp theo).</b>";
-return;
-}
-
-let topic=document.getElementById("topic").value;
-let content=q.general;
-
-if(topic==="career") content=q.career;
-if(topic==="money") content=q.money;
-if(topic==="love") content=q.love;
-
-document.getElementById("result").innerHTML=
-`<b>Quẻ Chính:</b> ${q.name}<br><br>
-<b>Luận giải:</b><br>${content}`;
-}
-
-</script>
-    <script>
-
-let lines = [];
-
-function tungXu() {
-    if (lines.length >= 6) {
-        alert("Đã đủ 6 lần tung.");
+    if(lines.length>=6){
+        alert("Đã đủ 6 lần gieo.");
         return;
     }
 
-    let total = 0;
-    for (let i = 0; i < 3; i++) {
-        total += Math.random() < 0.5 ? 2 : 3;
+    let total=0;
+    let html="";
+
+    for(let i=0;i<3;i++){
+        let v=Math.random()<0.5?2:3;
+        total+=v;
+        html+=`<div class="coin">Ngũ<br>Đế</div>`;
     }
 
+    document.getElementById("coins").innerHTML=html;
     lines.push(total);
-    document.getElementById("count").innerText = lines.length;
+
+    if(lines.length===6){
+        taoQue();
+    }
 }
 
-function resetQue() {
-    lines = [];
-    document.getElementById("count").innerText = 0;
-    document.getElementById("result").innerHTML = "";
+function resetQue(){
+    lines=[];
+    document.getElementById("coins").innerHTML="";
+    document.getElementById("hexagram").innerHTML="";
+    document.getElementById("result").innerHTML="";
 }
 
-function getLineType(value) {
-    if (value === 6) return "Âm biến";
-    if (value === 7) return "Dương";
-    if (value === 8) return "Âm";
-    if (value === 9) return "Dương biến";
+function taoQue(){
+
+    let main="";
+    let changed="";
+
+    for(let i=0;i<6;i++){
+
+        let v=lines[i];
+
+        if(v===7||v===9) main+="1";
+        else main+="0";
+
+        if(v===6) changed+="1";
+        else if(v===9) changed+="0";
+        else changed+=(v===7||v===9)?"1":"0";
+    }
+
+    hienThiQue(main,changed);
+}
+    const hexagrams = {
+
+"111111":{
+name:"Càn – Thiên",
+tong:"Vận thế mạnh, chủ động, thời cơ lớn.",
+work:"Thuận lợi để bứt phá, nên quyết đoán.",
+money:"Tài lộc tăng mạnh nếu dám đầu tư.",
+love:"Chủ động sẽ chiếm ưu thế.",
+overall:"Đại cát, nhưng tránh kiêu ngạo."
+},
+
+"000000":{
+name:"Khôn – Địa",
+tong:"Thuận theo thời, tích lũy dần.",
+work:"Ổn định, hợp làm nền tảng lâu dài.",
+money:"Tích lũy bền vững.",
+love:"Nhu hòa sẽ bền.",
+overall:"Tốt nếu biết nhẫn nại."
+},
+
+"100010":{
+name:"Truân",
+tong:"Khởi đầu khó khăn.",
+work:"Đầu giai đoạn mới sẽ vất vả.",
+money:"Chưa nên đầu tư lớn.",
+love:"Dễ hiểu lầm ban đầu.",
+overall:"Khó trước, dễ sau."
+},
+
+"010001":{
+name:"Mông",
+tong:"Chưa rõ đường đi.",
+work:"Cần học hỏi thêm.",
+money:"Chưa sáng suốt.",
+love:"Dễ chọn sai.",
+overall:"Nên tìm người chỉ dẫn."
+},
+
+"111010":{
+name:"Nhu",
+tong:"Chờ thời.",
+work:"Chưa phải lúc hành động.",
+money:"Giữ tiền.",
+love:"Kiên nhẫn.",
+overall:"Chậm mà chắc."
+},
+
+"010111":{
+name:"Tụng",
+tong:"Có tranh chấp.",
+work:"Tránh mâu thuẫn.",
+money:"Dễ hao vì kiện tụng.",
+love:"Cãi vã.",
+overall:"Nên hòa giải."
+},
+
+"000010":{
+name:"Sư",
+tong:"Cần tổ chức.",
+work:"Hợp làm việc nhóm.",
+money:"Ổn định khi có kế hoạch.",
+love:"Cần trách nhiệm.",
+overall:"Kỷ luật sẽ thắng."
+},
+
+"010000":{
+name:"Tỷ",
+tong:"Hợp tác tốt.",
+work:"Có người giúp.",
+money:"Tài lộc nhờ quan hệ.",
+love:"Duyên đến qua bạn bè.",
+overall:"Quý nhân phù trợ."
+},
+
+"110111":{
+name:"Tiểu Súc",
+tong:"Tích nhỏ thành lớn.",
+work:"Tiến chậm.",
+money:"Thu nhập tăng dần.",
+love:"Cần kiên nhẫn.",
+overall:"Chưa thể bứt phá."
+},
+
+"111011":{
+name:"Lý",
+tong:"Đi đúng quy tắc.",
+work:"Theo luật sẽ thành.",
+money:"Ổn định.",
+love:"Rõ ràng sẽ bền.",
+overall:"Đừng vượt giới hạn."
+},
+
+"000111":{
+name:"Thái",
+tong:"Vận hanh thông.",
+work:"Thăng tiến.",
+money:"Tài lộc mở rộng.",
+love:"Thuận hòa.",
+overall:"Cát."
+},
+
+"111000":{
+name:"Bĩ",
+tong:"Bế tắc tạm thời.",
+work:"Chậm lại.",
+money:"Khó khăn.",
+love:"Lạnh nhạt.",
+overall:"Sắp đổi chiều."
+},
+
+"101111":{
+name:"Đồng Nhân",
+tong:"Hợp tác lớn.",
+work:"Thành công nhờ tập thể.",
+money:"Tài lộc qua cộng tác.",
+love:"Tình cảm gắn kết.",
+overall:"Đại lợi khi đoàn kết."
+},
+
+"111101":{
+name:"Đại Hữu",
+tong:"Nhiều cơ hội.",
+work:"Có thành tựu.",
+money:"Tài chính mạnh.",
+love:"Tình cảm rực rỡ.",
+overall:"Thời kỳ tốt."
+},
+
+"001000":{
+name:"Khiêm",
+tong:"Khiêm tốn sinh phúc.",
+work:"Không nên khoe khoang.",
+money:"Giữ chắc.",
+love:"Nhường nhịn sẽ tốt.",
+overall:"Cát nhờ đức."
+},
+
+"000100":{
+name:"Dự",
+tong:"Chuẩn bị hành động.",
+work:"Có cơ hội mới.",
+money:"Thu bất ngờ.",
+love:"Có người để ý.",
+overall:"Khởi sắc."
+},
+
+"100110":{
+name:"Tùy",
+tong:"Thuận theo thời.",
+work:"Linh hoạt sẽ tốt.",
+money:"Biến động nhỏ.",
+love:"Thích nghi.",
+overall:"Không cố chấp."
+},
+
+"011001":{
+name:"Cổ",
+tong:"Sửa cái cũ.",
+work:"Khắc phục lỗi.",
+money:"Tốn tiền sửa chữa.",
+love:"Giải quyết chuyện cũ.",
+overall:"Sau sửa sẽ tốt."
+},
+
+"110000":{
+name:"Lâm",
+tong:"Tiến gần thành công.",
+work:"Cơ hội mở.",
+money:"Tăng dần.",
+love:"Duyên phát triển.",
+overall:"Thuận."
+},
+
+"000011":{
+name:"Quan",
+tong:"Quan sát.",
+work:"Chưa nên hành động.",
+money:"Theo dõi thị trường.",
+love:"Tìm hiểu thêm.",
+overall:"Bình ổn."
+},
+
+"100101":{
+name:"Cắn Cắn",
+tong:"Phải quyết đoán.",
+work:"Giải quyết dứt điểm.",
+money:"Cắt lỗ.",
+love:"Rõ ràng mới tốt.",
+overall:"Mạnh mẽ."
+},
+
+"101001":{
+name:"Bí",
+tong:"Trang trí, hình thức.",
+work:"Chú trọng hình ảnh.",
+money:"Chi tiêu nhiều.",
+love:"Bề ngoài hấp dẫn.",
+overall:"Đẹp nhưng chưa sâu."
+},
+
+"000001":{
+name:"Bác",
+tong:"Suy yếu.",
+work:"Dễ mất vị thế.",
+money:"Hao hụt.",
+love:"Dễ chia xa.",
+overall:"Không thuận."
+},
+
+"100000":{
+name:"Phục",
+tong:"Quay lại.",
+work:"Cơ hội trở lại.",
+money:"Thu hồi vốn.",
+love:"Tình cũ quay lại.",
+overall:"Tái sinh."
+},
+
+"100111":{
+name:"Vô Vọng",
+tong:"Đừng ảo tưởng.",
+work:"Làm thực tế.",
+money:"Tránh mạo hiểm.",
+love:"Thành thật.",
+overall:"Trung bình."
+},
+
+"111001":{
+name:"Đại Súc",
+tong:"Tích lũy lớn.",
+work:"Chờ thời bứt phá.",
+money:"Để dành.",
+love:"Cần trưởng thành.",
+overall:"Sắp tốt."
+},
+
+"100001":{
+name:"Di",
+tong:"Nuôi dưỡng.",
+work:"Học hỏi.",
+money:"Chi cho bản thân.",
+love:"Cần chăm sóc.",
+overall:"Phát triển nội lực."
+},
+
+"011110":{
+name:"Đại Quá",
+tong:"Quá sức.",
+work:"Gánh nặng lớn.",
+money:"Rủi ro cao.",
+love:"Căng thẳng.",
+overall:"Cẩn trọng."
+},
+
+"010010":{
+name:"Khảm",
+tong:"Hiểm nguy.",
+work:"Có trở ngại.",
+money:"Tránh đầu tư.",
+love:"Hiểu lầm.",
+overall:"Cần thận trọng."
+},
+
+"101101":{
+name:"Ly",
+tong:"Sáng tỏ.",
+work:"Hợp học hành.",
+money:"Lợi nhờ trí tuệ.",
+love:"Tình cảm rõ ràng.",
+overall:"Cát."
+},
+
+"001110":{
+name:"Hàm",
+tong:"Cảm ứng.",
+work:"Có cơ hội nhờ duyên.",
+money:"Tài lộc từ quan hệ.",
+love:"Tình cảm nảy sinh.",
+overall:"Khá tốt."
+},
+
+"011100":{
+name:"Hằng",
+tong:"Bền vững.",
+work:"Ổn định dài hạn.",
+money:"Tăng đều.",
+love:"Chung thủy.",
+overall:"Tốt lâu dài."
 }
 
-function convertToBinary(value) {
-    if (value === 7 || value === 9) return 1;
-    return 0;
+};
+    Object.assign(hexagrams,{
+
+"001111":{
+name:"Độn",
+tong:"Tạm lui để tiến.",
+work:"Không nên đối đầu.",
+money:"Giữ tiền.",
+love:"Giữ khoảng cách.",
+overall:"Lui để bảo toàn."
+},
+
+"111100":{
+name:"Đại Tráng",
+tong:"Sức mạnh lớn.",
+work:"Có thể bứt phá.",
+money:"Thu mạnh.",
+love:"Chủ động.",
+overall:"Tốt nhưng đừng nóng."
+},
+
+"000101":{
+name:"Tấn",
+tong:"Tiến lên.",
+work:"Có thăng tiến.",
+money:"Tăng trưởng.",
+love:"Khởi sắc.",
+overall:"Cát."
+},
+
+"101000":{
+name:"Minh Di",
+tong:"Ánh sáng bị che.",
+work:"Chưa được trọng dụng.",
+money:"Chậm.",
+love:"Hiểu lầm.",
+overall:"Nhẫn nại."
+},
+
+"101011":{
+name:"Gia Nhân",
+tong:"Gia đạo.",
+work:"Ổn định nhờ hậu phương.",
+money:"Chi cho gia đình.",
+love:"Tốt cho hôn nhân.",
+overall:"Êm ấm."
+},
+
+"110101":{
+name:"Khuê",
+tong:"Bất đồng.",
+work:"Tránh tranh luận.",
+money:"Biến động.",
+love:"Xung đột.",
+overall:"Cần hòa giải."
+},
+
+"001010":{
+name:"Kiển",
+tong:"Trở ngại.",
+work:"Có cản trở.",
+money:"Hao hụt nhỏ.",
+love:"Chậm phát triển.",
+overall:"Kiên trì."
+},
+
+"010100":{
+name:"Giải",
+tong:"Giải quyết.",
+work:"Vấn đề được tháo gỡ.",
+money:"Thu hồi vốn.",
+love:"Hiểu nhau hơn.",
+overall:"Khởi sắc."
+},
+
+"110001":{
+name:"Tổn",
+tong:"Giảm bớt.",
+work:"Cắt giảm để ổn.",
+money:"Hao trước lợi sau.",
+love:"Nhường nhịn.",
+overall:"Hy sinh sẽ tốt."
+},
+
+"100011":{
+name:"Ích",
+tong:"Gia tăng.",
+work:"Có thêm cơ hội.",
+money:"Thu tăng.",
+love:"Tình cảm phát triển.",
+overall:"Rất tốt."
+},
+
+"111110":{
+name:"Quải",
+tong:"Quyết liệt.",
+work:"Phải dứt khoát.",
+money:"Cắt lỗ.",
+love:"Rõ ràng.",
+overall:"Mạnh mẽ."
+},
+
+"011111":{
+name:"Cấu",
+tong:"Gặp gỡ bất ngờ.",
+work:"Có cơ hội mới.",
+money:"Thu nhỏ.",
+love:"Duyên bất ngờ.",
+overall:"Trung bình khá."
+},
+
+"000110":{
+name:"Tụy",
+tong:"Tập hợp.",
+work:"Làm việc nhóm.",
+money:"Lợi nhờ tập thể.",
+love:"Gắn kết.",
+overall:"Tốt."
+},
+
+"011000":{
+name:"Thăng",
+tong:"Đi lên từ từ.",
+work:"Thăng tiến chậm.",
+money:"Tăng dần.",
+love:"Ổn định.",
+overall:"Cát."
+},
+
+"010110":{
+name:"Khốn",
+tong:"Khó khăn.",
+work:"Áp lực.",
+money:"Thiếu hụt.",
+love:"Căng thẳng.",
+overall:"Chịu đựng."
+},
+
+"011010":{
+name:"Tỉnh",
+tong:"Nguồn lực.",
+work:"Có người hỗ trợ.",
+money:"Ổn định.",
+love:"Bền.",
+overall:"Khá."
+},
+
+"101110":{
+name:"Cách",
+tong:"Thay đổi.",
+work:"Biến động lớn.",
+money:"Thay chiến lược.",
+love:"Chuyển hướng.",
+overall:"Đổi mới."
+},
+
+"011101":{
+name:"Đỉnh",
+tong:"Ổn định cao.",
+work:"Đạt vị trí tốt.",
+money:"Vững mạnh.",
+love:"Chín muồi.",
+overall:"Cát."
+},
+
+"100100":{
+name:"Chấn",
+tong:"Bất ngờ.",
+work:"Biến động nhanh.",
+money:"Thu đột ngột.",
+love:"Tình đến nhanh.",
+overall:"Giật mình nhưng tốt."
+},
+
+"001001":{
+name:"Cấn",
+tong:"Dừng lại.",
+work:"Chưa nên tiến.",
+money:"Giữ tiền.",
+love:"Chững lại.",
+overall:"Tạm dừng."
+},
+
+"110110":{
+name:"Tiệm",
+tong:"Tiến dần.",
+work:"Phát triển từ từ.",
+money:"Tăng đều.",
+love:"Yêu lâu bền.",
+overall:"Tốt."
+},
+
+"001100":{
+name:"Quy Muội",
+tong:"Tình duyên bất ngờ.",
+work:"Không ổn định.",
+money:"Thất thường.",
+love:"Nhanh đến nhanh đi.",
+overall:"Trung bình."
+},
+
+"101100":{
+name:"Phong",
+tong:"Thịnh vượng.",
+work:"Thời vận tốt.",
+money:"Tài lộc mạnh.",
+love:"Rực rỡ.",
+overall:"Đại cát."
+},
+
+"001101":{
+name:"Lữ",
+tong:"Xa xứ.",
+work:"Di chuyển.",
+money:"Chi tiêu nhiều.",
+love:"Yêu xa.",
+overall:"Trung bình."
+},
+
+"100110":{
+name:"Tốn",
+tong:"Mềm mỏng.",
+work:"Khéo léo sẽ thành.",
+money:"Tăng chậm.",
+love:"Nhẹ nhàng.",
+overall:"Khá."
+},
+
+"011001":{
+name:"Đoài",
+tong:"Vui vẻ.",
+work:"Giao tiếp tốt.",
+money:"Thu nhờ quan hệ.",
+love:"Tình cảm vui.",
+overall:"Tốt."
+},
+
+"010011":{
+name:"Hoán",
+tong:"Phân tán.",
+work:"Thiếu tập trung.",
+money:"Dễ hao.",
+love:"Xa cách.",
+overall:"Không ổn."
+},
+
+"110010":{
+name:"Tiết",
+tong:"Hạn chế.",
+work:"Nên kiểm soát.",
+money:"Giữ tiền.",
+love:"Giữ chừng mực.",
+overall:"Ổn."
+},
+
+"110011":{
+name:"Trung Phu",
+tong:"Chân thành.",
+work:"Được tin tưởng.",
+money:"Ổn định.",
+love:"Chân thành bền.",
+overall:"Cát."
+},
+
+"001100":{
+name:"Tiểu Quá",
+tong:"Việc nhỏ tốt.",
+work:"Không nên làm lớn.",
+money:"Thu nhỏ.",
+love:"Quan tâm nhỏ.",
+overall:"Trung bình."
+},
+
+"010101":{
+name:"Ký Tế",
+tong:"Hoàn thành.",
+work:"Đã đạt mục tiêu.",
+money:"Đủ đầy.",
+love:"Ổn định.",
+overall:"Cát."
+},
+
+"101010":{
+name:"Vị Tế",
+tong:"Chưa xong.",
+work:"Còn dang dở.",
+money:"Chưa ổn định.",
+love:"Chưa rõ ràng.",
+overall:"Chưa kết."
 }
 
-function convertToBinaryChanged(value) {
-    if (value === 6) return 1;
-    if (value === 9) return 0;
-    return convertToBinary(value);
-}
+});
 
-const hexagrams = {
-"111111": {name:"Càn – Thiên", desc:"Quẻ đại cát. Thuần dương. Tượng trời. Chủ về quyền lực, lãnh đạo, tiến mạnh không ngừng. Tài lộc thịnh, công danh sáng."},
-"000000": {name:"Khôn – Địa", desc:"Quẻ nhu thuận. Tượng đất. Chủ về bao dung, hậu thuẫn. Hợp làm nền tảng, tích lũy, bền bỉ."},
-"010001": {name:"Phong Tốn", desc:"Gió vào núi. Chủ mềm mỏng, khéo léo. Tài lộc đến từ giao tiếp, ngoại giao."},
-"100010": {name:"Lôi Chấn", desc:"Sấm động. Chủ thay đổi mạnh. Có biến động nhưng là cơ hội bứt phá."},
-"010010": {name:"Thuỷ Khảm", desc:"Hiểm trở. Cần thận trọng. Không nên nóng vội."},
-"101101": {name:"Hoả Ly", desc:"Ánh sáng. Danh tiếng, văn chương, học hành, truyền thông tốt."},
-"110100": {name:"Trạch Đoài", desc:"Vui vẻ, giao tế tốt. Hợp kinh doanh, bán hàng."},
-"001011": {name:"Sơn Cấn", desc:"Dừng lại đúng lúc. Không nên tiến thêm."}
+function hienThiQue(main,changed){
+
+let mainHex=hexagrams[main]||{
+name:"Quẻ hỗn hợp",
+tong:"Vận trung tính.",
+work:"Quan sát thêm.",
+money:"Chưa rõ.",
+love:"Tùy duyên.",
+overall:"Bình thường."
 };
 
-function luanQue() {
+let changedHex=hexagrams[changed]||mainHex;
 
-    if (lines.length < 6) {
-        alert("Phải tung đủ 6 lần.");
-        return;
-    }
+let html="";
 
-    let binary = "";
-    let binaryChanged = "";
+html+="<h2>🔮 Quẻ Chính: "+mainHex.name+"</h2>";
+html+="<p><b>Tổng vận:</b> "+mainHex.tong+"</p>";
+html+="<p><b>Công việc:</b> "+mainHex.work+"</p>";
+html+="<p><b>Tài lộc:</b> "+mainHex.money+"</p>";
+html+="<p><b>Tình cảm:</b> "+mainHex.love+"</p>";
+html+="<p><b>Kết luận:</b> "+mainHex.overall+"</p>";
 
-    for (let i = 0; i < 6; i++) {
-        binary += convertToBinary(lines[i]);
-        binaryChanged += convertToBinaryChanged(lines[i]);
-    }
+if(main!==changed){
+html+="<hr>";
+html+="<h2>➡ Quẻ Biến: "+changedHex.name+"</h2>";
+html+="<p><b>Tổng vận:</b> "+changedHex.tong+"</p>";
+html+="<p><b>Công việc:</b> "+changedHex.work+"</p>";
+html+="<p><b>Tài lộc:</b> "+changedHex.money+"</p>";
+html+="<p><b>Tình cảm:</b> "+changedHex.love+"</p>";
+html+="<p><b>Kết luận:</b> "+changedHex.overall+"</p>";
+}
 
-    let mainHex = hexagrams[binary] || {name:"Quẻ khác", desc:"Quẻ chưa thêm dữ liệu."};
-    let changedHex = hexagrams[binaryChanged] || {name:"Quẻ biến", desc:"Quẻ biến đang mở rộng thêm."};
-
-    let detail = "<h2>🔮 Quẻ chính: " + mainHex.name + "</h2>";
-    detail += "<p>" + mainHex.desc + "</p>";
-
-    if (binary !== binaryChanged) {
-        detail += "<h3>➡ Quẻ biến: " + changedHex.name + "</h3>";
-        detail += "<p>" + changedHex.desc + "</p>";
-    }
-
-    detail += "<h3>📌 Phân tích theo từng mặt:</h3>";
-
-    detail += "<p><b>💼 Công việc:</b> Có xu hướng thay đổi tích cực nếu biết nắm thời cơ.</p>";
-    detail += "<p><b>💰 Tài lộc:</b> Tài chính tăng dần, tránh đầu tư nóng.</p>";
-    detail += "<p><b>❤️ Tình cảm:</b> Nếu độc thân dễ có người để ý. Có biến thì là duyên đến.</p>";
-    detail += "<p><b>⚖ Nhà nước – sự nghiệp ổn định:</b> Hợp môi trường kỷ luật, nên tiến chậm mà chắc.</p>";
-
-    document.getElementById("result").innerHTML = detail;
+document.getElementById("result").innerHTML=html;
 }
 
 </script>
