@@ -7,9 +7,11 @@
 <style>
 body{
     margin:0;
-    background: radial-gradient(circle at top,#1a1a1a,#000);
+    font-family: "Times New Roman", serif;
+    background-image: url("https://images.unsplash.com/photo-1549887534-1541e9326642");
+    background-size: cover;
+    background-position: center;
     color:#FFD700;
-    font-family: Arial;
     display:flex;
     justify-content:center;
     align-items:center;
@@ -17,9 +19,19 @@ body{
     text-align:center;
 }
 
-.container{ max-width:650px; padding:20px; }
+.overlay{
+    background: rgba(0,0,0,0.75);
+    padding:30px;
+    border-radius:15px;
+    max-width:700px;
+    box-shadow:0 0 40px rgba(255,215,0,0.3);
+}
 
-h1{ font-size:32px; }
+h1{
+    font-size:34px;
+    margin-bottom:15px;
+    text-shadow:0 0 10px #FFD700;
+}
 
 input{
     padding:10px;
@@ -33,20 +45,26 @@ input{
 button{
     padding:12px 20px;
     font-size:18px;
-    background:#FFD700;
+    background:#b8860b;
+    color:white;
     border:none;
     border-radius:8px;
     cursor:pointer;
     margin:5px;
-    font-weight:bold;
 }
 
-.coin{ font-size:50px; margin:6px; }
+button:hover{
+    background:#daa520;
+}
 
-.hexagram{
-    font-size:24px;
-    margin-top:15px;
-    line-height:1.4;
+.coin{
+    width:70px;
+    margin:5px;
+}
+
+.line{
+    font-size:22px;
+    margin:2px;
 }
 
 .result{
@@ -58,9 +76,10 @@ button{
 </head>
 
 <body>
-<div class="container">
 
-<h1>🧧 Gieo Quẻ Kinh Dịch</h1>
+<div class="overlay">
+
+<h1>☯ Gieo Quẻ Kinh Dịch ☯</h1>
 
 <input id="question" placeholder="Nhập điều bạn muốn hỏi..." />
 
@@ -69,7 +88,7 @@ button{
 <button onclick="tung()">Tung Đồng Xu</button>
 <button onclick="reset()">Gieo Lại</button>
 
-<div class="hexagram" id="hexagram"></div>
+<div id="hexagram"></div>
 <div class="result" id="result"></div>
 
 </div>
@@ -77,6 +96,8 @@ button{
 <script>
 
 let lines = [];
+
+const coinImg = "https://upload.wikimedia.org/wikipedia/commons/5/5e/Chinese_cash_coin_Qing_Dynasty.jpg";
 
 const hexagramList = [
 "Thuần Càn","Thuần Khôn","Thủy Lôi Truân","Sơn Thủy Mông","Thủy Thiên Nhu","Thiên Thủy Tụng",
@@ -90,7 +111,7 @@ const hexagramList = [
 "Phong Hỏa Gia Nhân","Hỏa Trạch Khuê","Thủy Sơn Kiển","Lôi Thủy Giải",
 "Sơn Trạch Tổn","Phong Lôi Ích","Trạch Thiên Quải","Thiên Phong Cấu",
 "Trạch Địa Tụy","Địa Phong Thăng","Trạch Thủy Khốn","Thủy Phong Tỉnh",
-"Trạch Hỏa Cách","Hỏa Phong Đỉnh","Thuần Chấn","Sơn Lôi Di (52)",
+"Trạch Hỏa Cách","Hỏa Phong Đỉnh","Thuần Chấn","Sơn Lôi Di",
 "Phong Sơn Tiệm","Lôi Trạch Quy Muội","Lôi Hỏa Phong","Hỏa Sơn Lữ",
 "Thuần Tốn","Thuần Đoài","Phong Thủy Hoán","Thủy Trạch Tiết",
 "Phong Trạch Trung Phu","Lôi Sơn Tiểu Quá","Thủy Hỏa Ký Tế","Hỏa Thủy Vị Tế"
@@ -103,18 +124,18 @@ function tung(){
     }
 
     let total = 0;
-    let display = "";
+    let html = "";
 
     for(let i=0;i<3;i++){
         let coin = Math.random() < 0.5 ? 2 : 3;
         total += coin;
-        display += coin === 3 ? "🪙" : "⚪";
+        html += "<img class='coin' src='"+coinImg+"'>";
     }
 
     lines.push(total);
 
     document.getElementById("coins").innerHTML +=
-        "<div class='coin'>" + display + " → " + total + "</div>";
+        "<div>"+html+" → "+total+"</div>";
 
     if(lines.length === 6){
         generateHexagram();
@@ -130,23 +151,23 @@ function generateHexagram(){
     for(let i=5;i>=0;i--){
         let line = lines[i];
 
-        if(line === 6){ 
-            display += "— — (Lão Âm)<br>";
+        if(line === 6){
+            display += "<div class='line'>— — (Lão Âm)</div>";
             binaryMain += "0";
             binaryChanged += "1";
         }
         else if(line === 7){
-            display += "———<br>";
+            display += "<div class='line'>———</div>";
             binaryMain += "1";
             binaryChanged += "1";
         }
         else if(line === 8){
-            display += "— —<br>";
+            display += "<div class='line'>— —</div>";
             binaryMain += "0";
             binaryChanged += "0";
         }
         else if(line === 9){
-            display += "——— (Lão Dương)<br>";
+            display += "<div class='line'>——— (Lão Dương)</div>";
             binaryMain += "1";
             binaryChanged += "0";
         }
@@ -162,23 +183,23 @@ function generateHexagram(){
 
     let question = document.getElementById("question").value;
 
-    let meaning = "<br><br>📜 Câu hỏi: " + (question || "Không nhập") +
-    "<br><br>🔮 Quẻ Chính: " + mainName +
-    "<br>🔁 Quẻ Biến: " + changedName +
-    "<br><br>✨ Luận giải tổng quát:<br>" +
-    "Thời vận đang chuyển động. Nếu có hào biến, tình thế có thay đổi.<br>" +
-    "Giữ chính đạo, tiến chậm mà chắc sẽ cát.";
-
-    document.getElementById("result").innerHTML = meaning;
+    document.getElementById("result").innerHTML =
+    "<br>📜 Câu hỏi: "+(question || "Không nhập")+
+    "<br><br>🔮 Quẻ Chính: <b>"+mainName+
+    "</b><br>🔁 Quẻ Biến: <b>"+changedName+
+    "</b><br><br>✨ Luận giải:<br>"+
+    "Vận khí đang chuyển. Có hào biến nghĩa là tình thế thay đổi.<br>"+
+    "Giữ chính đạo, thuận thời sẽ cát.";
 }
 
 function reset(){
-    lines = [];
-    document.getElementById("coins").innerHTML = "";
-    document.getElementById("hexagram").innerHTML = "";
-    document.getElementById("result").innerHTML = "";
+    lines=[];
+    document.getElementById("coins").innerHTML="";
+    document.getElementById("hexagram").innerHTML="";
+    document.getElementById("result").innerHTML="";
 }
 
 </script>
+
 </body>
 </html>
