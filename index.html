@@ -6,22 +6,53 @@
 <title>Gieo Quẻ Kinh Dịch</title>
 
 <style>
+
+/* ===== NỀN ÂM DƯƠNG + BÁT QUÁI ===== */
+
 body{
     margin:0;
-    font-family: 'Segoe UI', sans-serif;
-    background: radial-gradient(circle at top, #0f0f0f, #000);
+    font-family:'Segoe UI',sans-serif;
     color:#eee;
     text-align:center;
+    background:#000;
+    overflow-x:hidden;
 }
+
+/* Âm dương mờ */
+body::before{
+    content:"☯";
+    position:fixed;
+    font-size:420px;
+    color:rgba(255,255,255,0.04);
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    z-index:-2;
+}
+
+/* Bát quái mờ */
+body::after{
+    content:"☰ ☱ ☲ ☳ ☴ ☵ ☶ ☷";
+    position:fixed;
+    font-size:60px;
+    letter-spacing:25px;
+    color:rgba(212,175,55,0.05);
+    top:10%;
+    width:100%;
+    text-align:center;
+    z-index:-1;
+}
+
+/* ===== CONTAINER ===== */
 
 .container{
     max-width:520px;
-    margin:30px auto;
+    margin:40px auto;
     padding:25px;
-    background:rgba(255,255,255,0.04);
+    background:rgba(255,255,255,0.05);
     border-radius:20px;
-    box-shadow:0 0 40px rgba(212,175,55,0.1);
-    backdrop-filter: blur(12px);
+    box-shadow:0 0 50px rgba(212,175,55,0.1);
+    backdrop-filter: blur(10px);
 }
 
 h1{
@@ -29,6 +60,8 @@ h1{
     font-weight:500;
     letter-spacing:1px;
 }
+
+/* ===== NÚT ===== */
 
 button{
     padding:12px 28px;
@@ -47,39 +80,69 @@ button:hover{
     box-shadow:0 0 20px #d4af37;
 }
 
-/* ===== ĐỒNG XU CỔ ===== */
+/* ===== ĐỒNG XU CAO CẤP ===== */
 
 .coin{
-    width:95px;
-    height:95px;
-    margin:12px;
+    width:100px;
+    height:100px;
+    margin:10px;
     position:relative;
     border-radius:50%;
+    animation:spin 0.8s ease;
+    display:inline-block;
+}
+
+.coin-inner{
+    position:absolute;
+    width:100%;
+    height:100%;
+    border-radius:50%;
     background:
-        radial-gradient(circle at 30% 30%, #f6d365, #b8860b 70%);
+    radial-gradient(circle at 30% 30%, #f6d365, #b8860b 70%);
     box-shadow:
-        inset 0 0 18px rgba(0,0,0,0.7),
-        0 0 25px rgba(212,175,55,0.6);
-    display:inline-flex;
+        inset 0 0 20px rgba(0,0,0,0.7),
+        0 0 30px rgba(212,175,55,0.6);
+    display:flex;
     align-items:center;
     justify-content:center;
-    font-size:22px;
-    font-weight:bold;
     color:#3b2b00;
-    animation:spin 0.7s ease;
+    font-weight:bold;
 }
 
 /* Lỗ vuông */
-.coin::after{
+.coin-inner::after{
     content:"";
     position:absolute;
-    width:28px;
-    height:28px;
+    width:30px;
+    height:30px;
     background:#111;
     box-shadow:inset 0 0 8px #000;
 }
 
-/* Xoay */
+/* Chữ quanh viền */
+.coin-inner::before{
+    content:"乾 隆 通 寶";
+    position:absolute;
+    font-size:12px;
+    letter-spacing:3px;
+    top:10px;
+}
+
+/* Âm */
+.yin-face{
+    background:
+    radial-gradient(circle at 30% 30%, #ddd, #777 70%);
+    box-shadow:
+        inset 0 0 20px rgba(0,0,0,0.8),
+        0 0 20px rgba(255,255,255,0.2);
+}
+
+/* Dương */
+.yang-face{
+    background:
+    radial-gradient(circle at 30% 30%, #f6d365, #b8860b 70%);
+}
+
 @keyframes spin{
     from{transform:rotateY(0deg);}
     to{transform:rotateY(360deg);}
@@ -115,6 +178,7 @@ button:hover{
     text-align:left;
     line-height:1.6;
 }
+
 </style>
 </head>
 
@@ -146,16 +210,23 @@ lines=[];
 
 for(let i=0;i<6;i++){
 
-let coin1=Math.random()<0.5?2:3;
-let coin2=Math.random()<0.5?2:3;
-let coin3=Math.random()<0.5?2:3;
+let total=0;
 
-let total=coin1+coin2+coin3;
+for(let j=0;j<3;j++){
 
-let div=document.createElement("div");
-div.className="coin";
-div.innerText=total;
-document.getElementById("coins").appendChild(div);
+let isYang=Math.random()<0.5;
+let value=isYang?3:2;
+total+=value;
+
+let coin=document.createElement("div");
+coin.className="coin";
+
+let inner=document.createElement("div");
+inner.className="coin-inner " + (isYang?"yang-face":"yin-face");
+
+coin.appendChild(inner);
+document.getElementById("coins").appendChild(coin);
+}
 
 if(total==6){
 lines.push({value:0,change:true});
@@ -204,7 +275,7 @@ changed+= lines[i].value;
 
 hienThiQue(main,changed);
 }
-    const hexagrams = {
+const hexagrams = {
 
 "111111":{
 name:"Càn – Thiên",
