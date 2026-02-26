@@ -7,108 +7,85 @@
 <style>
 body{
     margin:0;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
     font-family:"Times New Roman",serif;
+    background:#000;
     color:#FFD700;
-    text-align:center;
+}
+
+/* ===== NỀN ===== */
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
     background:
-    url("https://upload.wikimedia.org/wikipedia/commons/6/6f/Bagua.svg") center/600px no-repeat,
-    url("https://upload.wikimedia.org/wikipedia/commons/3/3c/Yin_and_Yang_symbol.svg") center/350px no-repeat,
-    #000;
-    background-blend-mode:lighten;
+    url("https://upload.wikimedia.org/wikipedia/commons/6/6f/Bagua.svg") center/700px no-repeat,
+    url("https://upload.wikimedia.org/wikipedia/commons/3/3c/Yin_and_Yang_symbol.svg") center/350px no-repeat;
+    opacity:0.12;
+    z-index:-1;
 }
 
-/* ===== KHUNG CHÍNH ===== */
 .container{
-    margin:40px auto;
-    padding:30px;
-    background:rgba(0,0,0,0.85);
-    border-radius:20px;
-    width:90%;
+    text-align:center;
+    width:95%;
     max-width:900px;
-    box-shadow:0 0 40px rgba(255,215,0,0.4);
 }
 
-h1{
-    font-size:36px;
-    text-shadow:0 0 15px gold;
+/* ===== ĐỒNG XU ===== */
+.coin{
+    width:200px;
+    height:200px;
+    border-radius:50%;
+    background:
+    radial-gradient(circle at 30% 30%, #f2d16b, #b8860b 45%, #6e4e00 80%);
+    border:12px solid #4a3400;
+    position:relative;
+    margin:auto;
+    box-shadow:
+    inset 0 0 40px rgba(0,0,0,0.7),
+    0 0 40px rgba(255,215,0,0.4);
 }
 
-/* ===== INPUT ===== */
-input{
-    padding:12px;
-    width:90%;
-    font-size:16px;
-    border-radius:8px;
-    border:none;
-    margin-bottom:15px;
+.hole{
+    width:55px;
+    height:55px;
+    background:#111;
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
 }
 
-/* ===== BUTTON ===== */
+.text{
+    position:absolute;
+    font-size:30px;
+    font-weight:bold;
+    color:#3b2a00;
+}
+
+.top{ top:20px; left:50%; transform:translateX(-50%);}
+.bottom{ bottom:20px; left:50%; transform:translateX(-50%);}
+.left{ left:20px; top:50%; transform:translateY(-50%) rotate(-90deg);}
+.right{ right:20px; top:50%; transform:translateY(-50%) rotate(90deg);}
+
 button{
-    padding:10px 20px;
+    margin-top:30px;
+    padding:12px 25px;
     font-size:18px;
     background:#8b6508;
     color:white;
     border:none;
     border-radius:8px;
     cursor:pointer;
-    margin:5px;
-    font-weight:bold;
-}
-button:hover{
-    background:#b8860b;
 }
 
-/* ===== ĐỒNG XU THẬT ===== */
-.coin{
-    width:110px;
-    height:110px;
-    border-radius:50%;
-    background:
-    radial-gradient(circle at 30% 30%, #f5deb3, #cd9b1d 40%, #8b6508 80%);
-    border:8px solid #5c4300;
-    position:relative;
-    margin:10px;
-    display:inline-block;
-    box-shadow:
-    inset 0 0 15px rgba(0,0,0,0.6),
-    0 0 20px rgba(255,215,0,0.5);
-}
-
-/* Lỗ vuông giữa */
-.coin::after{
-    content:"";
-    position:absolute;
-    width:35px;
-    height:35px;
-    background:#000;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-}
-
-/* Chữ quanh viền */
-.coin-text{
-    position:absolute;
-    width:100%;
-    height:100%;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    font-size:18px;
-    font-weight:bold;
-    color:#3b2a00;
-    text-align:center;
-}
-
-/* ===== HÀO ===== */
-.line{
-    font-size:24px;
-    letter-spacing:4px;
-}
+button:hover{ background:#b8860b; }
 
 .result{
-    margin-top:20px;
+    margin-top:30px;
     text-align:left;
     line-height:1.8;
     font-size:17px;
@@ -119,89 +96,65 @@ button:hover{
 <body>
 
 <div class="container">
-<h1>☯ Gieo Quẻ Ngũ Đế ☯</h1>
 
-<input id="question" placeholder="Nhập điều bạn muốn hỏi..." />
+<div class="coin">
+    <div class="text top">乾</div>
+    <div class="text right">隆</div>
+    <div class="text bottom">通</div>
+    <div class="text left">寶</div>
+    <div class="hole"></div>
+</div>
 
-<div id="coins"></div>
+<button onclick="gieo()">Gieo Quẻ</button>
 
-<button onclick="tung()">Tung Ngũ Đế</button>
-<button onclick="reset()">Gieo Lại</button>
-
-<div id="hexagram"></div>
 <div class="result" id="result"></div>
 
 </div>
 
 <script>
 
-let lines=[];
-
-/* Chữ thật của tiền Ngũ Đế */
-const nguDe=[
-"順治通寶",
-"康熙通寶",
-"雍正通寶",
-"乾隆通寶",
-"嘉慶通寶"
+const hexagrams = [
+"Thuần Càn – Thiên (乾為天)",
+"Thuần Khôn – Địa (坤為地)",
+"Thiên Phong Cấu (天風姤)",
+"Phong Thiên Tiểu Súc (風天小畜)",
+"Phong Tốn (巽為風)",
+"Thiên Hỏa Đồng Nhân (天火同人)",
+"Địa Sơn Khiêm (地山謙)",
+"Thủy Hỏa Ký Tế (水火既濟)"
 ];
 
-function tung(){
-    if(lines.length>=6){ alert("Đủ 6 hào rồi!"); return;}
+function gieo(){
 
-    let total=0;
-    let html="";
+let main = hexagrams[Math.floor(Math.random()*hexagrams.length)];
+let changed = hexagrams[Math.floor(Math.random()*hexagrams.length)];
 
-    for(let i=0;i<3;i++){
-        let yang=Math.random()<0.5;
-        total+=yang?3:2;
+document.getElementById("result").innerHTML = `
+<b>📜 Quẻ Chính:</b> ${main}<br>
+<b>🔄 Quẻ Biến:</b> ${changed}<br><br>
 
-        let text=nguDe[Math.floor(Math.random()*5)];
+<b>🔮 Tổng Luận:</b><br>
+Quẻ cho thấy thời vận đang có sự chuyển động.
+Nếu quẻ thiên về Càn hoặc Khôn, đây là thời điểm trọng yếu,
+cần giữ chính đạo. Nếu thuộc nhóm Tốn, Cấu, Tiểu Súc,
+ám chỉ thời cơ nhỏ, phải nhẫn nại tích lũy.
+<br><br>
 
-        html+=`
-        <div class="coin">
-            <div class="coin-text">${text}</div>
-        </div>`;
-    }
+<b>💰 Công Danh – Tài Lộc:</b><br>
+Không nên nóng vội. Tài lộc đến từ quá trình dài,
+tránh đầu cơ nhất thời.
+<br><br>
 
-    lines.push(total);
-    document.getElementById("coins").innerHTML+=`<div>${html} → ${total}</div>`;
+<b>❤️ Tình Cảm:</b><br>
+Nếu thuận quẻ, nhân duyên có tiến triển.
+Nếu quẻ biến xung khắc, nên giữ bình tĩnh,
+tránh lời nói gây tổn thương.
+<br><br>
 
-    if(lines.length===6) generate();
-}
-
-function generate(){
-
-    let display="";
-    let main="",changed="";
-
-    for(let i=5;i>=0;i--){
-        let l=lines[i];
-
-        if(l===6){ display+="<div class='line'>— — (Lão Âm)</div>"; main+="0"; changed+="1";}
-        else if(l===7){ display+="<div class='line'>———</div>"; main+="1"; changed+="1";}
-        else if(l===8){ display+="<div class='line'>— —</div>"; main+="0"; changed+="0";}
-        else if(l===9){ display+="<div class='line'>——— (Lão Dương)</div>"; main+="1"; changed+="0";}
-    }
-
-    document.getElementById("hexagram").innerHTML=display;
-
-    document.getElementById("result").innerHTML=
-    `<b>📜 Câu hỏi:</b> ${document.getElementById("question").value||"Không nhập"}<br><br>
-    <b>🔮 Luận giải:</b><br>
-    Quẻ biểu thị sự vận động của âm dương.
-    Nếu xuất hiện hào biến, thời cuộc đang chuyển hóa.
-    Nên thuận thế, không cưỡng cầu.
-    Công việc lấy ổn định làm gốc.
-    Tài lộc đến từ bền bỉ.
-    Tình cảm cần chân thành và nhẫn nại.`;
-}
-
-function reset(){
-    lines=[];
-    document.getElementById("coins").innerHTML="";
-    document.getElementById("hexagram").innerHTML="";
-    document.getElementById("result").innerHTML="";
+<b>⚖ Lời Khuyên:</b><br>
+Lấy tĩnh làm chủ, thuận thiên thời,
+không cưỡng cầu nghịch thế.
+`;
 }
 
 </script>
