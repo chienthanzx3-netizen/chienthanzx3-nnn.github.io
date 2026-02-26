@@ -3,84 +3,108 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kinh Dịch 64 Quẻ – Bản Ứng Dụng</title>
+<title>Gieo Quẻ Kinh Dịch</title>
 
 <style>
 body{
     margin:0;
     font-family: 'Segoe UI', sans-serif;
-    background: radial-gradient(circle at top, #1a1a1a, #000);
-    color:#f5f5f5;
+    background: radial-gradient(circle at top, #0f0f0f, #000);
+    color:#eee;
     text-align:center;
 }
 
 .container{
-    max-width:500px;
+    max-width:520px;
     margin:30px auto;
-    padding:20px;
-    background:rgba(255,255,255,0.05);
+    padding:25px;
+    background:rgba(255,255,255,0.04);
     border-radius:20px;
-    box-shadow:0 0 30px rgba(255,215,0,0.15);
-    backdrop-filter: blur(10px);
+    box-shadow:0 0 40px rgba(212,175,55,0.1);
+    backdrop-filter: blur(12px);
 }
 
 h1{
-    font-size:26px;
-    color:#FFD700;
-    margin-bottom:10px;
+    color:#d4af37;
+    font-weight:500;
+    letter-spacing:1px;
 }
 
 button{
-    padding:12px 25px;
-    font-size:16px;
+    padding:12px 28px;
     border:none;
     border-radius:30px;
-    background:linear-gradient(45deg,#FFD700,#ff9900);
+    background:linear-gradient(45deg,#d4af37,#ffcc00);
     color:#000;
+    font-weight:bold;
     cursor:pointer;
-    margin-top:15px;
     transition:0.3s;
+    margin-top:15px;
 }
 
 button:hover{
-    transform:scale(1.05);
-    box-shadow:0 0 15px #FFD700;
+    transform:scale(1.07);
+    box-shadow:0 0 20px #d4af37;
 }
 
+/* ===== ĐỒNG XU CỔ ===== */
+
 .coin{
-    width:80px;
-    height:80px;
-    margin:10px;
+    width:95px;
+    height:95px;
+    margin:12px;
+    position:relative;
     border-radius:50%;
+    background:
+        radial-gradient(circle at 30% 30%, #f6d365, #b8860b 70%);
+    box-shadow:
+        inset 0 0 18px rgba(0,0,0,0.7),
+        0 0 25px rgba(212,175,55,0.6);
     display:inline-flex;
     align-items:center;
     justify-content:center;
-    font-size:20px;
+    font-size:22px;
     font-weight:bold;
-    background:radial-gradient(circle,#FFD700,#b8860b);
-    color:#000;
-    box-shadow:0 0 15px rgba(255,215,0,0.6);
-    animation:spin 0.6s ease;
+    color:#3b2b00;
+    animation:spin 0.7s ease;
 }
 
+/* Lỗ vuông */
+.coin::after{
+    content:"";
+    position:absolute;
+    width:28px;
+    height:28px;
+    background:#111;
+    box-shadow:inset 0 0 8px #000;
+}
+
+/* Xoay */
 @keyframes spin{
     from{transform:rotateY(0deg);}
     to{transform:rotateY(360deg);}
 }
 
+/* ===== HÀO ===== */
+
 .line{
-    height:12px;
-    width:200px;
-    margin:6px auto;
-    border-radius:6px;
+    height:14px;
+    width:220px;
+    margin:8px auto;
+    border-radius:7px;
 }
 
 .yang{
-    background:#FFD700;
+    background:linear-gradient(to right,#d4af37,#ffcc00);
 }
 
 .yin{
-    background:linear-gradient(to right,#FFD700 40%, transparent 40%, transparent 60%, #FFD700 60%);
+    background:
+    linear-gradient(to right,
+    #d4af37 40%,
+    transparent 40%,
+    transparent 60%,
+    #d4af37 60%);
 }
 
 #result{
@@ -89,11 +113,14 @@ button:hover{
     background:rgba(255,255,255,0.05);
     border-radius:15px;
     text-align:left;
+    line-height:1.6;
 }
 </style>
+</head>
 
 <body>
 <div class="container">
+
 <h1>🔮 Gieo Quẻ Kinh Dịch</h1>
 
 <div id="coins"></div>
@@ -103,61 +130,79 @@ button:hover{
 <div id="hexagram"></div>
 
 <div id="result"></div>
+
 </div>
 
 <script>
 
 let lines=[];
 
-function tungXu(){
+function tungQue(){
 
-    if(lines.length>=6){
-        alert("Đã đủ 6 lần gieo.");
-        return;
-    }
+document.getElementById("coins").innerHTML="";
+document.getElementById("hexagram").innerHTML="";
+document.getElementById("result").innerHTML="";
+lines=[];
 
-    let total=0;
-    let html="";
+for(let i=0;i<6;i++){
 
-    for(let i=0;i<3;i++){
-        let v=Math.random()<0.5?2:3;
-        total+=v;
-        html+=`<div class="coin">Ngũ<br>Đế</div>`;
-    }
+let coin1=Math.random()<0.5?2:3;
+let coin2=Math.random()<0.5?2:3;
+let coin3=Math.random()<0.5?2:3;
 
-    document.getElementById("coins").innerHTML=html;
-    lines.push(total);
+let total=coin1+coin2+coin3;
 
-    if(lines.length===6){
-        taoQue();
-    }
+let div=document.createElement("div");
+div.className="coin";
+div.innerText=total;
+document.getElementById("coins").appendChild(div);
+
+if(total==6){
+lines.push({value:0,change:true});
+}
+else if(total==7){
+lines.push({value:1,change:false});
+}
+else if(total==8){
+lines.push({value:0,change:false});
+}
+else if(total==9){
+lines.push({value:1,change:true});
+}
 }
 
-function resetQue(){
-    lines=[];
-    document.getElementById("coins").innerHTML="";
-    document.getElementById("hexagram").innerHTML="";
-    document.getElementById("result").innerHTML="";
+veQue();
 }
 
-function taoQue(){
+function veQue(){
 
-    let main="";
-    let changed="";
+let main="";
+let changed="";
 
-    for(let i=0;i<6;i++){
+for(let i=0;i<6;i++){
 
-        let v=lines[i];
+let lineDiv=document.createElement("div");
 
-        if(v===7||v===9) main+="1";
-        else main+="0";
+if(lines[i].value==1){
+lineDiv.className="line yang";
+main+="1";
+}
+else{
+lineDiv.className="line yin";
+main+="0";
+}
 
-        if(v===6) changed+="1";
-        else if(v===9) changed+="0";
-        else changed+=(v===7||v===9)?"1":"0";
-    }
+document.getElementById("hexagram").prepend(lineDiv);
 
-    hienThiQue(main,changed);
+if(lines[i].change){
+changed+= lines[i].value==1?"0":"1";
+}
+else{
+changed+= lines[i].value;
+}
+}
+
+hienThiQue(main,changed);
 }
     const hexagrams = {
 
