@@ -2,50 +2,52 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Gieo Quẻ Ngũ Đế - Kinh Dịch</title>
+<title>Gieo Quẻ Ngũ Đế</title>
 
 <style>
 body{
     margin:0;
-    font-family: "Times New Roman", serif;
-    background:
-    radial-gradient(circle at center, rgba(255,215,0,0.1), transparent 70%),
-    repeating-conic-gradient(#000 0deg 45deg,#111 45deg 90deg);
+    font-family:"Times New Roman",serif;
     color:#FFD700;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    min-height:100vh;
     text-align:center;
+    background:
+    url("https://upload.wikimedia.org/wikipedia/commons/6/6f/Bagua.svg") center/600px no-repeat,
+    url("https://upload.wikimedia.org/wikipedia/commons/3/3c/Yin_and_Yang_symbol.svg") center/350px no-repeat,
+    #000;
+    background-blend-mode:lighten;
 }
 
+/* ===== KHUNG CHÍNH ===== */
 .container{
-    background: rgba(0,0,0,0.85);
+    margin:40px auto;
     padding:30px;
+    background:rgba(0,0,0,0.85);
     border-radius:20px;
-    max-width:800px;
-    box-shadow:0 0 60px rgba(255,215,0,0.4);
+    width:90%;
+    max-width:900px;
+    box-shadow:0 0 40px rgba(255,215,0,0.4);
 }
 
 h1{
-    font-size:34px;
-    margin-bottom:15px;
+    font-size:36px;
     text-shadow:0 0 15px gold;
 }
 
+/* ===== INPUT ===== */
 input{
-    padding:10px;
+    padding:12px;
     width:90%;
-    margin-bottom:15px;
     font-size:16px;
     border-radius:8px;
     border:none;
+    margin-bottom:15px;
 }
 
+/* ===== BUTTON ===== */
 button{
-    padding:12px 20px;
+    padding:10px 20px;
     font-size:18px;
-    background:#b8860b;
+    background:#8b6508;
     color:white;
     border:none;
     border-radius:8px;
@@ -53,55 +55,63 @@ button{
     margin:5px;
     font-weight:bold;
 }
-
-button:hover{ background:#daa520; }
-
-.coin{
-    width:80px;
-    height:80px;
-    border-radius:50%;
-    background: radial-gradient(circle at 30% 30%, #ffd700, #8b6508);
-    border:5px solid #5c4300;
-    display:inline-flex;
-    justify-content:center;
-    align-items:center;
-    margin:5px;
-    font-size:16px;
-    font-weight:bold;
-    color:#3b2a00;
-    position:relative;
-    box-shadow:0 0 20px rgba(255,215,0,0.6);
-    animation: spin 0.6s ease;
+button:hover{
+    background:#b8860b;
 }
 
+/* ===== ĐỒNG XU THẬT ===== */
+.coin{
+    width:110px;
+    height:110px;
+    border-radius:50%;
+    background:
+    radial-gradient(circle at 30% 30%, #f5deb3, #cd9b1d 40%, #8b6508 80%);
+    border:8px solid #5c4300;
+    position:relative;
+    margin:10px;
+    display:inline-block;
+    box-shadow:
+    inset 0 0 15px rgba(0,0,0,0.6),
+    0 0 20px rgba(255,215,0,0.5);
+}
+
+/* Lỗ vuông giữa */
 .coin::after{
     content:"";
     position:absolute;
-    width:25px;
-    height:25px;
+    width:35px;
+    height:35px;
     background:#000;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
 }
 
-.coin span{
-    z-index:1;
+/* Chữ quanh viền */
+.coin-text{
+    position:absolute;
+    width:100%;
+    height:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:18px;
+    font-weight:bold;
+    color:#3b2a00;
     text-align:center;
-    line-height:1.2;
 }
 
-@keyframes spin{
-    from{ transform: rotateY(0deg); }
-    to{ transform: rotateY(360deg); }
-}
-
+/* ===== HÀO ===== */
 .line{
-    font-size:22px;
+    font-size:24px;
+    letter-spacing:4px;
 }
 
 .result{
     margin-top:20px;
-    font-size:17px;
-    line-height:1.7;
     text-align:left;
+    line-height:1.8;
+    font-size:17px;
 }
 </style>
 </head>
@@ -109,7 +119,6 @@ button:hover{ background:#daa520; }
 <body>
 
 <div class="container">
-
 <h1>☯ Gieo Quẻ Ngũ Đế ☯</h1>
 
 <input id="question" placeholder="Nhập điều bạn muốn hỏi..." />
@@ -126,30 +135,19 @@ button:hover{ background:#daa520; }
 
 <script>
 
-let lines = [];
+let lines=[];
 
-const nguDe = ["順治","康熙","雍正","乾隆","嘉慶"];
-
-const hexagramList = [
-"Thuần Càn","Thuần Khôn","Thủy Lôi Truân","Sơn Thủy Mông","Thủy Thiên Nhu","Thiên Thủy Tụng",
-"Địa Thủy Sư","Thủy Địa Tỷ","Phong Thiên Tiểu Súc","Thiên Trạch Lý","Địa Thiên Thái","Thiên Địa Bĩ",
-"Thiên Hỏa Đồng Nhân","Hỏa Thiên Đại Hữu","Địa Sơn Khiêm","Lôi Địa Dự",
-"Trạch Lôi Tùy","Sơn Phong Cổ","Địa Trạch Lâm","Phong Địa Quán",
-"Hỏa Lôi Phệ Hạp","Sơn Hỏa Bí","Sơn Địa Bác","Địa Lôi Phục",
-"Thiên Lôi Vô Vọng","Sơn Thiên Đại Súc","Sơn Lôi Di","Trạch Phong Đại Quá",
-"Thuần Khảm","Thuần Ly","Trạch Sơn Hàm","Lôi Phong Hằng",
-"Thiên Sơn Độn","Lôi Thiên Đại Tráng","Hỏa Địa Tấn","Địa Hỏa Minh Di",
-"Phong Hỏa Gia Nhân","Hỏa Trạch Khuê","Thủy Sơn Kiển","Lôi Thủy Giải",
-"Sơn Trạch Tổn","Phong Lôi Ích","Trạch Thiên Quải","Thiên Phong Cấu",
-"Trạch Địa Tụy","Địa Phong Thăng","Trạch Thủy Khốn","Thủy Phong Tỉnh",
-"Trạch Hỏa Cách","Hỏa Phong Đỉnh","Thuần Chấn","Sơn Lôi Di",
-"Phong Sơn Tiệm","Lôi Trạch Quy Muội","Lôi Hỏa Phong","Hỏa Sơn Lữ",
-"Thuần Tốn","Thuần Đoài","Phong Thủy Hoán","Thủy Trạch Tiết",
-"Phong Trạch Trung Phu","Lôi Sơn Tiểu Quá","Thủy Hỏa Ký Tế","Hỏa Thủy Vị Tế"
+/* Chữ thật của tiền Ngũ Đế */
+const nguDe=[
+"順治通寶",
+"康熙通寶",
+"雍正通寶",
+"乾隆通寶",
+"嘉慶通寶"
 ];
 
 function tung(){
-    if(lines.length>=6){ alert("Đủ 6 hào rồi!"); return; }
+    if(lines.length>=6){ alert("Đủ 6 hào rồi!"); return;}
 
     let total=0;
     let html="";
@@ -159,11 +157,14 @@ function tung(){
         total+=yang?3:2;
 
         let text=nguDe[Math.floor(Math.random()*5)];
-        html+=`<div class="coin"><span>${text}</span></div>`;
+
+        html+=`
+        <div class="coin">
+            <div class="coin-text">${text}</div>
+        </div>`;
     }
 
     lines.push(total);
-
     document.getElementById("coins").innerHTML+=`<div>${html} → ${total}</div>`;
 
     if(lines.length===6) generate();
@@ -171,42 +172,29 @@ function tung(){
 
 function generate(){
 
-    let main="",changed="",display="";
+    let display="";
+    let main="",changed="";
 
     for(let i=5;i>=0;i--){
         let l=lines[i];
 
-        if(l===6){ display+="<div class='line'>— — (Lão Âm)</div>"; main+="0"; changed+="1"; }
-        else if(l===7){ display+="<div class='line'>———</div>"; main+="1"; changed+="1"; }
-        else if(l===8){ display+="<div class='line'>— —</div>"; main+="0"; changed+="0"; }
-        else if(l===9){ display+="<div class='line'>——— (Lão Dương)</div>"; main+="1"; changed+="0"; }
+        if(l===6){ display+="<div class='line'>— — (Lão Âm)</div>"; main+="0"; changed+="1";}
+        else if(l===7){ display+="<div class='line'>———</div>"; main+="1"; changed+="1";}
+        else if(l===8){ display+="<div class='line'>— —</div>"; main+="0"; changed+="0";}
+        else if(l===9){ display+="<div class='line'>——— (Lão Dương)</div>"; main+="1"; changed+="0";}
     }
 
     document.getElementById("hexagram").innerHTML=display;
 
-    let q=document.getElementById("question").value;
-
-    let mainName=hexagramList[parseInt(main,2)%64];
-    let changedName=hexagramList[parseInt(changed,2)%64];
-
     document.getElementById("result").innerHTML=
-    `<b>📜 Câu hỏi:</b> ${q||"Không nhập"}<br><br>
-    <b>🔮 Quẻ Chính:</b> ${mainName}<br>
-    <b>🔁 Quẻ Biến:</b> ${changedName}<br><br>
-
-    <b>✨ Tổng vận:</b><br>
-    Thời thế đang vận động. Có hào biến cho thấy sự chuyển hóa.
-    Mọi việc không cố định, nên thuận thời mà hành.<br><br>
-
-    <b>💼 Công việc:</b><br>
-    Nên giữ nguyên tắc, không nóng vội. Nếu làm trong môi trường ổn định,
-    quẻ khuyên lấy ổn định làm gốc, tiến chậm mà chắc.<br><br>
-
-    <b>💰 Tài lộc:</b><br>
-    Tài khí đến từ sự bền bỉ, không nên đầu cơ mạo hiểm.<br><br>
-
-    <b>❤️ Tình cảm:</b><br>
-    Cần chân thành và nhẫn nại. Nếu có biến hào, nghĩa là mối quan hệ có thể chuyển giai đoạn.<br>`;
+    `<b>📜 Câu hỏi:</b> ${document.getElementById("question").value||"Không nhập"}<br><br>
+    <b>🔮 Luận giải:</b><br>
+    Quẻ biểu thị sự vận động của âm dương.
+    Nếu xuất hiện hào biến, thời cuộc đang chuyển hóa.
+    Nên thuận thế, không cưỡng cầu.
+    Công việc lấy ổn định làm gốc.
+    Tài lộc đến từ bền bỉ.
+    Tình cảm cần chân thành và nhẫn nại.`;
 }
 
 function reset(){
