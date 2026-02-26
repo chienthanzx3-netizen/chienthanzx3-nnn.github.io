@@ -30,7 +30,6 @@ font-size:16px;
 border-radius:8px;
 cursor:pointer;
 font-weight:bold;
-border-radius:8px;
 }
 
 #log{
@@ -55,7 +54,7 @@ text-align:left;
 </head>
 <body>
 
-<h1>🔮 GIEO QUẺ KINH DỊCH</h1>
+<h1>🔮 GIEO QUẺ KINH DỊCH (64 QUẺ)</h1>
 
 <div id="coins"></div>
 
@@ -66,64 +65,66 @@ text-align:left;
 
 <script>
 
-let lines = [];          // quẻ chính
-let changedLines = [];   // quẻ biến
-let lineCount = 0;
+// =====================
+// PHẦN 1 – LOGIC GIEO
+// =====================
+
+let lines=[];
+let changedLines=[];
+let lineCount=0;
 
 function tungDongXu(){
 
-if(lineCount === 6){
+if(lineCount===6){
 alert("Đã đủ 6 hào. F5 để gieo lại.");
 return;
 }
 
-let total = 0;
-let coins = [];
+let total=0;
+let coins=[];
 
 for(let i=0;i<3;i++){
-let ngua = Math.random() < 0.5; // ngửa = 3, sấp = 2
+let ngua=Math.random()<0.5;
 
 if(ngua){
 coins.push("🪙");
-total += 3;
+total+=3;
 }else{
 coins.push("⚪");
-total += 2;
+total+=2;
 }
 }
 
-document.getElementById("coins").innerHTML = coins.join(" ");
+document.getElementById("coins").innerHTML=coins.join(" ");
 
-let lineValue = "";
-let changedValue = "";
-let loai = "";
+let lineValue="";
+let changedValue="";
+let loai="";
 
-// Quy ước chuẩn Kinh Dịch
-if(total === 6){
-lineValue = "0";        // Âm
-changedValue = "1";     // biến thành Dương
-loai = "Lão Âm (động)";
+if(total===6){
+lineValue="0";
+changedValue="1";
+loai="Lão Âm (động)";
 }
-else if(total === 7){
-lineValue = "1";        // Dương
-changedValue = "1";
-loai = "Thiếu Dương";
+else if(total===7){
+lineValue="1";
+changedValue="1";
+loai="Thiếu Dương";
 }
-else if(total === 8){
-lineValue = "0";        // Âm
-changedValue = "0";
-loai = "Thiếu Âm";
+else if(total===8){
+lineValue="0";
+changedValue="0";
+loai="Thiếu Âm";
 }
-else if(total === 9){
-lineValue = "1";        // Dương
-changedValue = "0";     // biến thành Âm
-loai = "Lão Dương (động)";
+else if(total===9){
+lineValue="1";
+changedValue="0";
+loai="Lão Dương (động)";
 }
 
-// LƯU TỪ DƯỚI LÊN (chuẩn Kinh Dịch)
+// Lưu từ dưới lên
 lines.unshift(lineValue);
 changedLines.unshift(changedValue);
-
 lineCount++;
 
 document.getElementById("log").innerHTML +=
@@ -131,33 +132,83 @@ document.getElementById("log").innerHTML +=
 " → Tổng: "+total+
 " → "+loai+"</p>";
 
-if(lineCount === 6){
+if(lineCount===6){
 
-let mainHex = lines.join("");
-let changedHex = changedLines.join("");
+let mainHex=lines.join("");
+let changedHex=changedLines.join("");
 
-// kiểm tra có tồn tại trong 64 quẻ không
-if(!hexagrams[mainHex]){
-alert("Không tìm thấy quẻ chính trong danh sách 64 quẻ!");
-return;
-}
-
-if(!hexagrams[changedHex]){
-alert("Không tìm thấy quẻ biến trong danh sách 64 quẻ!");
-return;
-}
-
-let mainName = hexagrams[mainHex].name;
-let changedName = hexagrams[changedHex].name;
+let mainName = hexagrams[mainHex] ? hexagrams[mainHex].name : "Không tìm thấy";
+let changedName = hexagrams[changedHex] ? hexagrams[changedHex].name : "Không tìm thấy";
 
 document.getElementById("log").innerHTML +=
 "<hr><h2>🔮 Quẻ Chính: "+mainName+"</h2>"+
 "<h2>🔁 Quẻ Biến: "+changedName+"</h2>";
 
-hienThiQue(mainHex, changedHex);
+hienThiQue(mainHex,changedHex);
 }
 
 }
+
+// =====================
+// PHẦN 2+3 – 64 QUẺ
+// =====================
+
+let hexagrams={};
+
+// Ví dụ 2 quẻ mẫu (bạn có thể dán full 64 quẻ của bạn vào đây)
+
+hexagrams["111111"]={
+name:"Thuần Càn",
+tong:"Trời, mạnh mẽ, sáng tạo.",
+work:"Cơ hội lớn.",
+money:"Tài lộc mạnh.",
+love:"Chủ động.",
+overall:"Đại cát."
+};
+
+hexagrams["000000"]={
+name:"Thuần Khôn",
+tong:"Đất, nhu thuận.",
+work:"Ổn định.",
+money:"Tích lũy.",
+love:"Bao dung.",
+overall:"Cát."
+};
+
+// =====================
+// HIỂN THỊ QUẺ
+// =====================
+
+function hienThiQue(main,changed){
+
+let mainHex=hexagrams[main];
+let changedHex=hexagrams[changed];
+
+let html="";
+
+html+="<h2>🔮 Quẻ Chính: "+mainHex.name+"</h2>";
+html+="<p><b>Tổng vận:</b> "+mainHex.tong+"</p>";
+html+="<p><b>Công việc:</b> "+mainHex.work+"</p>";
+html+="<p><b>Tài lộc:</b> "+mainHex.money+"</p>";
+html+="<p><b>Tình cảm:</b> "+mainHex.love+"</p>";
+html+="<p><b>Kết luận:</b> "+mainHex.overall+"</p>";
+
+if(main!==changed){
+html+="<hr>";
+html+="<h2>🔁 Quẻ Biến: "+changedHex.name+"</h2>";
+html+="<p><b>Tổng vận:</b> "+changedHex.tong+"</p>";
+html+="<p><b>Công việc:</b> "+changedHex.work+"</p>";
+html+="<p><b>Tài lộc:</b> "+changedHex.money+"</p>";
+html+="<p><b>Tình cảm:</b> "+changedHex.love+"</p>";
+html+="<p><b>Kết luận:</b> "+changedHex.overall+"</p>";
+}
+
+document.getElementById("result").innerHTML=html;
+}
+
+</script>
+</body>
+</html>
     const hexagrams = {
 
 "111111":{
