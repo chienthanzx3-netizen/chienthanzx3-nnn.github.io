@@ -3,68 +3,71 @@
 <head>
 <meta charset="UTF-8">
 <title>Gieo Quẻ Kinh Dịch</title>
+
 <style>
 body{
     margin:0;
-    background: radial-gradient(circle at top, #1a1a1a, #000);
+    background: radial-gradient(circle at top,#1a1a1a,#000);
     color:#FFD700;
-    font-family: Arial, sans-serif;
+    font-family: Arial;
     display:flex;
     justify-content:center;
     align-items:center;
-    height:100vh;
+    min-height:100vh;
     text-align:center;
 }
 
-.container{
-    max-width:500px;
-}
+.container{ max-width:650px; padding:20px; }
 
-h1{
-    font-size:32px;
-    margin-bottom:20px;
+h1{ font-size:32px; }
+
+input{
+    padding:10px;
+    width:90%;
+    margin-bottom:15px;
+    font-size:16px;
+    border-radius:8px;
+    border:none;
 }
 
 button{
-    padding:15px 25px;
-    font-size:20px;
+    padding:12px 20px;
+    font-size:18px;
     background:#FFD700;
     border:none;
-    border-radius:10px;
+    border-radius:8px;
     cursor:pointer;
+    margin:5px;
     font-weight:bold;
 }
 
-button:hover{
-    background:#ffcc00;
-}
+.coin{ font-size:50px; margin:6px; }
 
-.coin{
-    font-size:60px;
-    margin:10px;
+.hexagram{
+    font-size:24px;
+    margin-top:15px;
+    line-height:1.4;
 }
 
 .result{
     margin-top:20px;
-    font-size:22px;
+    font-size:18px;
     line-height:1.6;
-}
-
-.hexagram{
-    font-size:28px;
-    margin-top:15px;
 }
 </style>
 </head>
 
 <body>
-
 <div class="container">
+
 <h1>🧧 Gieo Quẻ Kinh Dịch</h1>
+
+<input id="question" placeholder="Nhập điều bạn muốn hỏi..." />
 
 <div id="coins"></div>
 
 <button onclick="tung()">Tung Đồng Xu</button>
+<button onclick="reset()">Gieo Lại</button>
 
 <div class="hexagram" id="hexagram"></div>
 <div class="result" id="result"></div>
@@ -72,7 +75,26 @@ button:hover{
 </div>
 
 <script>
+
 let lines = [];
+
+const hexagramList = [
+"Thuần Càn","Thuần Khôn","Thủy Lôi Truân","Sơn Thủy Mông","Thủy Thiên Nhu","Thiên Thủy Tụng",
+"Địa Thủy Sư","Thủy Địa Tỷ","Phong Thiên Tiểu Súc","Thiên Trạch Lý","Địa Thiên Thái","Thiên Địa Bĩ",
+"Thiên Hỏa Đồng Nhân","Hỏa Thiên Đại Hữu","Địa Sơn Khiêm","Lôi Địa Dự",
+"Trạch Lôi Tùy","Sơn Phong Cổ","Địa Trạch Lâm","Phong Địa Quán",
+"Hỏa Lôi Phệ Hạp","Sơn Hỏa Bí","Sơn Địa Bác","Địa Lôi Phục",
+"Thiên Lôi Vô Vọng","Sơn Thiên Đại Súc","Sơn Lôi Di","Trạch Phong Đại Quá",
+"Thuần Khảm","Thuần Ly","Trạch Sơn Hàm","Lôi Phong Hằng",
+"Thiên Sơn Độn","Lôi Thiên Đại Tráng","Hỏa Địa Tấn","Địa Hỏa Minh Di",
+"Phong Hỏa Gia Nhân","Hỏa Trạch Khuê","Thủy Sơn Kiển","Lôi Thủy Giải",
+"Sơn Trạch Tổn","Phong Lôi Ích","Trạch Thiên Quải","Thiên Phong Cấu",
+"Trạch Địa Tụy","Địa Phong Thăng","Trạch Thủy Khốn","Thủy Phong Tỉnh",
+"Trạch Hỏa Cách","Hỏa Phong Đỉnh","Thuần Chấn","Sơn Lôi Di (52)",
+"Phong Sơn Tiệm","Lôi Trạch Quy Muội","Lôi Hỏa Phong","Hỏa Sơn Lữ",
+"Thuần Tốn","Thuần Đoài","Phong Thủy Hoán","Thủy Trạch Tiết",
+"Phong Trạch Trung Phu","Lôi Sơn Tiểu Quá","Thủy Hỏa Ký Tế","Hỏa Thủy Vị Tế"
+];
 
 function tung(){
     if(lines.length >= 6){
@@ -81,18 +103,18 @@ function tung(){
     }
 
     let total = 0;
-    let coinDisplay = "";
+    let display = "";
 
     for(let i=0;i<3;i++){
         let coin = Math.random() < 0.5 ? 2 : 3;
         total += coin;
-        coinDisplay += coin === 3 ? "🪙" : "⚪";
+        display += coin === 3 ? "🪙" : "⚪";
     }
 
     lines.push(total);
 
-    document.getElementById("coins").innerHTML += 
-        "<div class='coin'>" + coinDisplay + " → " + total + "</div>";
+    document.getElementById("coins").innerHTML +=
+        "<div class='coin'>" + display + " → " + total + "</div>";
 
     if(lines.length === 6){
         generateHexagram();
@@ -100,48 +122,63 @@ function tung(){
 }
 
 function generateHexagram(){
-    let binary = "";
+
+    let binaryMain = "";
+    let binaryChanged = "";
     let display = "";
 
     for(let i=5;i>=0;i--){
-        if(lines[i] === 6){
+        let line = lines[i];
+
+        if(line === 6){ 
             display += "— — (Lão Âm)<br>";
-            binary += "0";
+            binaryMain += "0";
+            binaryChanged += "1";
         }
-        else if(lines[i] === 7){
-            display += "——— (Thiếu Dương)<br>";
-            binary += "1";
+        else if(line === 7){
+            display += "———<br>";
+            binaryMain += "1";
+            binaryChanged += "1";
         }
-        else if(lines[i] === 8){
-            display += "— — (Thiếu Âm)<br>";
-            binary += "0";
+        else if(line === 8){
+            display += "— —<br>";
+            binaryMain += "0";
+            binaryChanged += "0";
         }
-        else if(lines[i] === 9){
+        else if(line === 9){
             display += "——— (Lão Dương)<br>";
-            binary += "1";
+            binaryMain += "1";
+            binaryChanged += "0";
         }
     }
 
     document.getElementById("hexagram").innerHTML = display;
 
-    let ketluan = "";
+    let indexMain = parseInt(binaryMain,2) % 64;
+    let indexChanged = parseInt(binaryChanged,2) % 64;
 
-    if(binary === "101110"){
-        ketluan = "<b>Quẻ Hỏa Phong Đỉnh</b><br><br>" +
-        "🔥 Thời vận đang lên. Công việc có cơ hội thay đổi tích cực.<br>" +
-        "Nếu biết cải tổ và nắm thời cơ, sẽ có bước tiến mạnh.<br>" +
-        "Tránh nóng vội, nên giữ uy tín và sự chuyên nghiệp.";
-    }
-    else{
-        ketluan = "<b>Quẻ của bạn đã thành.</b><br><br>" +
-        "Đây là thời điểm cần suy xét kỹ hành động.<br>" +
-        "Tiến chậm mà chắc, giữ ổn định trước khi mở rộng.<br>" +
-        "Nếu kiên trì, kết quả sẽ tốt.";
-    }
+    let mainName = hexagramList[indexMain];
+    let changedName = hexagramList[indexChanged];
 
-    document.getElementById("result").innerHTML = ketluan;
+    let question = document.getElementById("question").value;
+
+    let meaning = "<br><br>📜 Câu hỏi: " + (question || "Không nhập") +
+    "<br><br>🔮 Quẻ Chính: " + mainName +
+    "<br>🔁 Quẻ Biến: " + changedName +
+    "<br><br>✨ Luận giải tổng quát:<br>" +
+    "Thời vận đang chuyển động. Nếu có hào biến, tình thế có thay đổi.<br>" +
+    "Giữ chính đạo, tiến chậm mà chắc sẽ cát.";
+
+    document.getElementById("result").innerHTML = meaning;
 }
-</script>
 
+function reset(){
+    lines = [];
+    document.getElementById("coins").innerHTML = "";
+    document.getElementById("hexagram").innerHTML = "";
+    document.getElementById("result").innerHTML = "";
+}
+
+</script>
 </body>
 </html>
