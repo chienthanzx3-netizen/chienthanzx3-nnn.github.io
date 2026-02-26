@@ -200,15 +200,16 @@ button:hover{
 <script>
 
 let lines=[];
+let currentThrow=0;
 
 function tungQue(){
 
-document.getElementById("coins").innerHTML="";
-document.getElementById("hexagram").innerHTML="";
-document.getElementById("result").innerHTML="";
-lines=[];
+if(currentThrow>=6){
+resetGame();
+return;
+}
 
-for(let i=0;i<6;i++){
+document.getElementById("coins").innerHTML="";
 
 let total=0;
 
@@ -240,9 +241,33 @@ lines.push({value:0,change:false});
 else if(total==9){
 lines.push({value:1,change:true});
 }
+
+currentThrow++;
+
+veTamThoi();
+
+if(currentThrow==6){
+setTimeout(()=>veQue(),500);
+}
 }
 
-veQue();
+function veTamThoi(){
+let hex=document.getElementById("hexagram");
+hex.innerHTML="";
+
+for(let i=0;i<lines.length;i++){
+
+let lineDiv=document.createElement("div");
+
+if(lines[i].value==1){
+lineDiv.className="line yang";
+}
+else{
+lineDiv.className="line yin";
+}
+
+hex.prepend(lineDiv);
+}
 }
 
 function veQue(){
@@ -252,18 +277,7 @@ let changed="";
 
 for(let i=0;i<6;i++){
 
-let lineDiv=document.createElement("div");
-
-if(lines[i].value==1){
-lineDiv.className="line yang";
-main+="1";
-}
-else{
-lineDiv.className="line yin";
-main+="0";
-}
-
-document.getElementById("hexagram").prepend(lineDiv);
+main+=lines[i].value;
 
 if(lines[i].change){
 changed+= lines[i].value==1?"0":"1";
@@ -275,6 +289,16 @@ changed+= lines[i].value;
 
 hienThiQue(main,changed);
 }
+
+function resetGame(){
+lines=[];
+currentThrow=0;
+document.getElementById("coins").innerHTML="";
+document.getElementById("hexagram").innerHTML="";
+document.getElementById("result").innerHTML="";
+}
+
+</script>
 const hexagrams = {
 
 "111111":{
