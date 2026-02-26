@@ -7,14 +7,12 @@
 
 <style>
 
-/* ===== NỀN ÂM DƯƠNG + BÁT QUÁI ===== */
-
 body{
     margin:0;
     font-family:'Segoe UI',sans-serif;
+    background:#000;
     color:#eee;
     text-align:center;
-    background:#000;
     overflow-x:hidden;
 }
 
@@ -43,8 +41,6 @@ body::after{
     z-index:-1;
 }
 
-/* ===== CONTAINER ===== */
-
 .container{
     max-width:520px;
     margin:40px auto;
@@ -58,10 +54,7 @@ body::after{
 h1{
     color:#d4af37;
     font-weight:500;
-    letter-spacing:1px;
 }
-
-/* ===== NÚT ===== */
 
 button{
     padding:12px 28px;
@@ -80,7 +73,7 @@ button:hover{
     box-shadow:0 0 20px #d4af37;
 }
 
-/* ===== ĐỒNG XU CAO CẤP ===== */
+/* ===== ĐỒNG XU ===== */
 
 .coin{
     width:100px;
@@ -97,16 +90,30 @@ button:hover{
     width:100%;
     height:100%;
     border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:12px;
+    font-weight:bold;
+    color:#3b2b00;
+}
+
+/* Dương */
+.yang-face{
     background:
     radial-gradient(circle at 30% 30%, #f6d365, #b8860b 70%);
     box-shadow:
         inset 0 0 20px rgba(0,0,0,0.7),
         0 0 30px rgba(212,175,55,0.6);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color:#3b2b00;
-    font-weight:bold;
+}
+
+/* Âm */
+.yin-face{
+    background:
+    radial-gradient(circle at 30% 30%, #ddd, #777 70%);
+    box-shadow:
+        inset 0 0 20px rgba(0,0,0,0.8),
+        0 0 20px rgba(255,255,255,0.2);
 }
 
 /* Lỗ vuông */
@@ -119,28 +126,12 @@ button:hover{
     box-shadow:inset 0 0 8px #000;
 }
 
-/* Chữ quanh viền */
+/* Chữ viền */
 .coin-inner::before{
     content:"乾 隆 通 寶";
     position:absolute;
-    font-size:12px;
-    letter-spacing:3px;
     top:10px;
-}
-
-/* Âm */
-.yin-face{
-    background:
-    radial-gradient(circle at 30% 30%, #ddd, #777 70%);
-    box-shadow:
-        inset 0 0 20px rgba(0,0,0,0.8),
-        0 0 20px rgba(255,255,255,0.2);
-}
-
-/* Dương */
-.yang-face{
-    background:
-    radial-gradient(circle at 30% 30%, #f6d365, #b8860b 70%);
+    letter-spacing:3px;
 }
 
 @keyframes spin{
@@ -183,6 +174,7 @@ button:hover{
 </head>
 
 <body>
+
 <div class="container">
 
 <h1>🔮 Gieo Quẻ Kinh Dịch</h1>
@@ -192,7 +184,6 @@ button:hover{
 <button onclick="tungQue()">Tung Đồng Xu</button>
 
 <div id="hexagram"></div>
-
 <div id="result"></div>
 
 </div>
@@ -247,7 +238,7 @@ currentThrow++;
 veTamThoi();
 
 if(currentThrow==6){
-setTimeout(()=>veQue(),500);
+setTimeout(()=>veQue(),600);
 }
 }
 
@@ -256,16 +247,8 @@ let hex=document.getElementById("hexagram");
 hex.innerHTML="";
 
 for(let i=0;i<lines.length;i++){
-
 let lineDiv=document.createElement("div");
-
-if(lines[i].value==1){
-lineDiv.className="line yang";
-}
-else{
-lineDiv.className="line yin";
-}
-
+lineDiv.className=lines[i].value==1?"line yang":"line yin";
 hex.prepend(lineDiv);
 }
 }
@@ -276,9 +259,7 @@ let main="";
 let changed="";
 
 for(let i=0;i<6;i++){
-
 main+=lines[i].value;
-
 if(lines[i].change){
 changed+= lines[i].value==1?"0":"1";
 }
@@ -297,8 +278,6 @@ document.getElementById("coins").innerHTML="";
 document.getElementById("hexagram").innerHTML="";
 document.getElementById("result").innerHTML="";
 }
-
-</script>
 const hexagrams = {
 
 "111111":{
