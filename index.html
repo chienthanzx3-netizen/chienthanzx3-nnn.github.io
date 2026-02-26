@@ -2,157 +2,145 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Kinh Dịch - Tung Đồng Xu</title>
+<title>Gieo Quẻ Kinh Dịch</title>
 <style>
 body{
-    background:#111;
-    color:#f5d27a;
+    margin:0;
+    background: radial-gradient(circle at top, #1a1a1a, #000);
+    color:#FFD700;
+    font-family: Arial, sans-serif;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
     text-align:center;
-    font-family:serif;
 }
-h1{margin-top:20px;}
-.coin{
-    display:inline-block;
-    width:90px;
-    height:90px;
-    line-height:90px;
-    border-radius:50%;
-    border:3px solid #f5d27a;
-    margin:10px;
-    font-size:14px;
-    background:#222;
+
+.container{
+    max-width:500px;
 }
+
+h1{
+    font-size:32px;
+    margin-bottom:20px;
+}
+
 button{
-    padding:10px 20px;
-    font-size:16px;
-    background:#f5d27a;
+    padding:15px 25px;
+    font-size:20px;
+    background:#FFD700;
     border:none;
+    border-radius:10px;
     cursor:pointer;
-    margin-top:15px;
+    font-weight:bold;
 }
-.line{
-    font-size:28px;
-    letter-spacing:6px;
+
+button:hover{
+    background:#ffcc00;
 }
-#luan{
+
+.coin{
+    font-size:60px;
+    margin:10px;
+}
+
+.result{
     margin-top:20px;
-    padding:15px;
-    border-top:1px solid #f5d27a;
+    font-size:22px;
+    line-height:1.6;
+}
+
+.hexagram{
+    font-size:28px;
+    margin-top:15px;
 }
 </style>
 </head>
+
 <body>
 
-<h1>🔮 Kinh Dịch - 3 Đồng Xu Ngũ Đế</h1>
+<div class="container">
+<h1>🧧 Gieo Quẻ Kinh Dịch</h1>
 
 <div id="coins"></div>
 
-<button onclick="tung()">Tung Hào</button>
-<button onclick="reset()">Làm Lại</button>
+<button onclick="tung()">Tung Đồng Xu</button>
 
-<h2>Quẻ</h2>
-<div id="result"></div>
+<div class="hexagram" id="hexagram"></div>
+<div class="result" id="result"></div>
 
-<div id="luan"></div>
+</div>
 
 <script>
-
-let que = [];
-let bien = [];
-
-const coinsList = [
-"乾隆通宝",
-"嘉庆通宝",
-"道光通宝"
-];
+let lines = [];
 
 function tung(){
+    if(lines.length >= 6){
+        alert("Đã đủ 6 lần gieo!");
+        return;
+    }
 
-if(que.length >= 6){
-alert("Đã đủ 6 hào!");
-return;
+    let total = 0;
+    let coinDisplay = "";
+
+    for(let i=0;i<3;i++){
+        let coin = Math.random() < 0.5 ? 2 : 3;
+        total += coin;
+        coinDisplay += coin === 3 ? "🪙" : "⚪";
+    }
+
+    lines.push(total);
+
+    document.getElementById("coins").innerHTML += 
+        "<div class='coin'>" + coinDisplay + " → " + total + "</div>";
+
+    if(lines.length === 6){
+        generateHexagram();
+    }
 }
 
-let total = 0;
-let coinsHTML = "";
+function generateHexagram(){
+    let binary = "";
+    let display = "";
 
-for(let i=0;i<3;i++){
-let rand = Math.random() < 0.5 ? 2 : 3;
-total += rand;
-let name = coinsList[Math.floor(Math.random()*3)];
-coinsHTML += `<div class="coin">${name}</div>`;
+    for(let i=5;i>=0;i--){
+        if(lines[i] === 6){
+            display += "— — (Lão Âm)<br>";
+            binary += "0";
+        }
+        else if(lines[i] === 7){
+            display += "——— (Thiếu Dương)<br>";
+            binary += "1";
+        }
+        else if(lines[i] === 8){
+            display += "— — (Thiếu Âm)<br>";
+            binary += "0";
+        }
+        else if(lines[i] === 9){
+            display += "——— (Lão Dương)<br>";
+            binary += "1";
+        }
+    }
+
+    document.getElementById("hexagram").innerHTML = display;
+
+    let ketluan = "";
+
+    if(binary === "101110"){
+        ketluan = "<b>Quẻ Hỏa Phong Đỉnh</b><br><br>" +
+        "🔥 Thời vận đang lên. Công việc có cơ hội thay đổi tích cực.<br>" +
+        "Nếu biết cải tổ và nắm thời cơ, sẽ có bước tiến mạnh.<br>" +
+        "Tránh nóng vội, nên giữ uy tín và sự chuyên nghiệp.";
+    }
+    else{
+        ketluan = "<b>Quẻ của bạn đã thành.</b><br><br>" +
+        "Đây là thời điểm cần suy xét kỹ hành động.<br>" +
+        "Tiến chậm mà chắc, giữ ổn định trước khi mở rộng.<br>" +
+        "Nếu kiên trì, kết quả sẽ tốt.";
+    }
+
+    document.getElementById("result").innerHTML = ketluan;
 }
-
-document.getElementById("coins").innerHTML = coinsHTML;
-
-let line = "";
-let lineBien = "";
-
-if(total == 6){
-line = "— —";
-lineBien = "———";
-}
-else if(total == 7){
-line = "———";
-lineBien = "———";
-}
-else if(total == 8){
-line = "— —";
-lineBien = "— —";
-}
-else if(total == 9){
-line = "———";
-lineBien = "— —";
-}
-
-que.unshift(line);
-bien.unshift(lineBien);
-
-render();
-
-if(que.length == 6){
-luanQue();
-}
-
-}
-
-function render(){
-let html="";
-for(let i=0;i<que.length;i++){
-html += `<div class="line">${que[i]}</div>`;
-}
-document.getElementById("result").innerHTML = html;
-}
-
-function luanQue(){
-
-let demDuong = que.filter(x=>x=="———").length;
-
-let ketluan="";
-
-if(demDuong >=4){
-ketluan="Quẻ thiên về Dương: Thời vận đang lên, nên chủ động nắm cơ hội.";
-}
-else if(demDuong <=2){
-ketluan="Quẻ thiên về Âm: Nên thận trọng, chờ thời, không nên vội vàng.";
-}
-else{
-ketluan="Âm Dương cân bằng: Ổn định, tiến từng bước sẽ tốt.";
-}
-
-document.getElementById("luan").innerHTML=
-"<h3>Quẻ Biến</h3>"+bien.map(x=>`<div class='line'>${x}</div>`).join("")+
-"<h3>Luận Tổng Quan</h3><p>"+ketluan+"</p>";
-}
-
-function reset(){
-que=[];
-bien=[];
-document.getElementById("result").innerHTML="";
-document.getElementById("coins").innerHTML="";
-document.getElementById("luan").innerHTML="";
-}
-
 </script>
 
 </body>
