@@ -2,21 +2,21 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Gieo Quẻ Ngũ Đế</title>
+<title>Kinh Dịch Cao Cấp</title>
 
 <style>
 body{
     margin:0;
-    min-height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
     font-family:"Times New Roman",serif;
     background:#000;
     color:#FFD700;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
 }
 
-/* ===== NỀN ===== */
+/* Nền Âm Dương + Bát Quái */
 body::before{
     content:"";
     position:fixed;
@@ -29,135 +29,260 @@ body::before{
 }
 
 .container{
-    text-align:center;
     width:95%;
-    max-width:900px;
+    max-width:950px;
+    text-align:center;
 }
 
-/* ===== ĐỒNG XU ===== */
+/* Đồng tiền */
 .coin{
-    width:200px;
-    height:200px;
+    width:180px;
+    height:180px;
     border-radius:50%;
     background:
     radial-gradient(circle at 30% 30%, #f2d16b, #b8860b 45%, #6e4e00 80%);
-    border:12px solid #4a3400;
+    border:10px solid #4a3400;
     position:relative;
-    margin:auto;
-    box-shadow:
-    inset 0 0 40px rgba(0,0,0,0.7),
-    0 0 40px rgba(255,215,0,0.4);
+    margin:20px auto;
+    box-shadow:inset 0 0 30px rgba(0,0,0,0.7),
+               0 0 30px rgba(255,215,0,0.4);
 }
-
 .hole{
-    width:55px;
-    height:55px;
-    background:#111;
-    position:absolute;
-    top:50%;
-    left:50%;
+    width:50px;height:50px;background:#111;
+    position:absolute;top:50%;left:50%;
     transform:translate(-50%,-50%);
 }
-
 .text{
     position:absolute;
-    font-size:30px;
+    font-size:28px;
     font-weight:bold;
     color:#3b2a00;
 }
+.top{ top:15px; left:50%; transform:translateX(-50%);}
+.bottom{ bottom:15px; left:50%; transform:translateX(-50%);}
+.left{ left:15px; top:50%; transform:translateY(-50%) rotate(-90deg);}
+.right{ right:15px; top:50%; transform:translateY(-50%) rotate(90deg);}
 
-.top{ top:20px; left:50%; transform:translateX(-50%);}
-.bottom{ bottom:20px; left:50%; transform:translateX(-50%);}
-.left{ left:20px; top:50%; transform:translateY(-50%) rotate(-90deg);}
-.right{ right:20px; top:50%; transform:translateY(-50%) rotate(90deg);}
+input, select{
+    padding:10px;
+    margin:8px;
+    width:80%;
+    max-width:500px;
+    border-radius:6px;
+    border:none;
+    font-size:16px;
+}
 
 button{
-    margin-top:30px;
-    padding:12px 25px;
+    padding:10px 25px;
     font-size:18px;
     background:#8b6508;
     color:white;
     border:none;
-    border-radius:8px;
+    border-radius:6px;
     cursor:pointer;
 }
-
 button:hover{ background:#b8860b; }
 
 .result{
-    margin-top:30px;
+    margin-top:25px;
     text-align:left;
     line-height:1.8;
-    font-size:17px;
 }
+.line{ font-size:22px; }
 </style>
 </head>
-
 <body>
 
 <div class="container">
 
 <div class="coin">
-    <div class="text top">乾</div>
-    <div class="text right">隆</div>
-    <div class="text bottom">通</div>
-    <div class="text left">寶</div>
-    <div class="hole"></div>
+<div class="text top">乾</div>
+<div class="text right">隆</div>
+<div class="text bottom">通</div>
+<div class="text left">寶</div>
+<div class="hole"></div>
 </div>
+
+<h2>Gieo Quẻ Kinh Dịch</h2>
+
+<input id="question" placeholder="Nhập câu hỏi của bạn..."><br>
+
+<select id="topic">
+<option value="general">Tổng quát</option>
+<option value="career">Công việc</option>
+<option value="money">Tài lộc</option>
+<option value="love">Tình cảm</option>
+</select><br>
 
 <button onclick="gieo()">Gieo Quẻ</button>
 
+<div id="hexagram"></div>
 <div class="result" id="result"></div>
 
 </div>
 
 <script>
 
-const hexagrams = [
-"Thuần Càn – Thiên (乾為天)",
-"Thuần Khôn – Địa (坤為地)",
-"Thiên Phong Cấu (天風姤)",
-"Phong Thiên Tiểu Súc (風天小畜)",
-"Phong Tốn (巽為風)",
-"Thiên Hỏa Đồng Nhân (天火同人)",
-"Địa Sơn Khiêm (地山謙)",
-"Thủy Hỏa Ký Tế (水火既濟)"
-];
+/* ===== 16 QUẺ ĐẦU CÓ LUẬN CHI TIẾT ===== */
+
+const data = {
+"111111": {name:"Thuần Càn (乾為天)",
+general:"Thời điểm hành động mạnh mẽ. Chủ động sẽ có lợi.",
+career:"Thuận lợi thăng tiến nếu dám chịu trách nhiệm.",
+money:"Tài lộc tăng khi chủ động đầu tư đúng hướng.",
+love:"Cần dẫn dắt, đừng quá cứng rắn."},
+
+"000000": {name:"Thuần Khôn (坤為地)",
+general:"Nên thuận theo, kiên nhẫn chờ thời.",
+career:"Hợp vai trò hỗ trợ hơn là lãnh đạo.",
+money:"Tích lũy nhỏ nhưng bền.",
+love:"Nhu hòa sẽ giữ được tình cảm."},
+
+"010001": {name:"Thủy Sơn Kiển (水山蹇)",
+general:"Gặp trở ngại, nên đi đường vòng.",
+career:"Có cản trở, đừng đối đầu trực diện.",
+money:"Tránh đầu tư lớn.",
+love:"Cần thấu hiểu thay vì trách móc."}
+};
+
+/* ===== GIEO 6 HÀO ===== */
 
 function gieo(){
 
-let main = hexagrams[Math.floor(Math.random()*hexagrams.length)];
-let changed = hexagrams[Math.floor(Math.random()*hexagrams.length)];
+let lines=[];
+for(let i=0;i<6;i++){
+let total=0;
+for(let j=0;j<3;j++){
+total += Math.random()<0.5 ? 2 : 3;
+}
+lines.push(total);
+}
 
-document.getElementById("result").innerHTML = `
-<b>📜 Quẻ Chính:</b> ${main}<br>
-<b>🔄 Quẻ Biến:</b> ${changed}<br><br>
+let bin="";
+let display="";
 
-<b>🔮 Tổng Luận:</b><br>
-Quẻ cho thấy thời vận đang có sự chuyển động.
-Nếu quẻ thiên về Càn hoặc Khôn, đây là thời điểm trọng yếu,
-cần giữ chính đạo. Nếu thuộc nhóm Tốn, Cấu, Tiểu Súc,
-ám chỉ thời cơ nhỏ, phải nhẫn nại tích lũy.
-<br><br>
+for(let i=5;i>=0;i--){
+let l=lines[i];
+if(l===6){ bin+="0"; display+="<div class='line'>— — (Âm động)</div>";}
+else if(l===7){ bin+="1"; display+="<div class='line'>———</div>";}
+else if(l===8){ bin+="0"; display+="<div class='line'>— —</div>";}
+else if(l===9){ bin+="1"; display+="<div class='line'>——— (Dương động)</div>";}
+}
 
-<b>💰 Công Danh – Tài Lộc:</b><br>
-Không nên nóng vội. Tài lộc đến từ quá trình dài,
-tránh đầu cơ nhất thời.
-<br><br>
+document.getElementById("hexagram").innerHTML=display;
 
-<b>❤️ Tình Cảm:</b><br>
-Nếu thuận quẻ, nhân duyên có tiến triển.
-Nếu quẻ biến xung khắc, nên giữ bình tĩnh,
-tránh lời nói gây tổn thương.
-<br><br>
+let q=data[bin];
 
-<b>⚖ Lời Khuyên:</b><br>
-Lấy tĩnh làm chủ, thuận thiên thời,
-không cưỡng cầu nghịch thế.
-`;
+if(!q){
+document.getElementById("result").innerHTML=
+"<b>Quẻ chưa được bổ sung luận chi tiết (sẽ cập nhật ở phần tiếp theo).</b>";
+return;
+}
+
+let topic=document.getElementById("topic").value;
+let content=q.general;
+
+if(topic==="career") content=q.career;
+if(topic==="money") content=q.money;
+if(topic==="love") content=q.love;
+
+document.getElementById("result").innerHTML=
+`<b>Quẻ Chính:</b> ${q.name}<br><br>
+<b>Luận giải:</b><br>${content}`;
 }
 
 </script>
+    <script>
 
+let lines = [];
+
+function tungXu() {
+    if (lines.length >= 6) {
+        alert("Đã đủ 6 lần tung.");
+        return;
+    }
+
+    let total = 0;
+    for (let i = 0; i < 3; i++) {
+        total += Math.random() < 0.5 ? 2 : 3;
+    }
+
+    lines.push(total);
+    document.getElementById("count").innerText = lines.length;
+}
+
+function resetQue() {
+    lines = [];
+    document.getElementById("count").innerText = 0;
+    document.getElementById("result").innerHTML = "";
+}
+
+function getLineType(value) {
+    if (value === 6) return "Âm biến";
+    if (value === 7) return "Dương";
+    if (value === 8) return "Âm";
+    if (value === 9) return "Dương biến";
+}
+
+function convertToBinary(value) {
+    if (value === 7 || value === 9) return 1;
+    return 0;
+}
+
+function convertToBinaryChanged(value) {
+    if (value === 6) return 1;
+    if (value === 9) return 0;
+    return convertToBinary(value);
+}
+
+const hexagrams = {
+"111111": {name:"Càn – Thiên", desc:"Quẻ đại cát. Thuần dương. Tượng trời. Chủ về quyền lực, lãnh đạo, tiến mạnh không ngừng. Tài lộc thịnh, công danh sáng."},
+"000000": {name:"Khôn – Địa", desc:"Quẻ nhu thuận. Tượng đất. Chủ về bao dung, hậu thuẫn. Hợp làm nền tảng, tích lũy, bền bỉ."},
+"010001": {name:"Phong Tốn", desc:"Gió vào núi. Chủ mềm mỏng, khéo léo. Tài lộc đến từ giao tiếp, ngoại giao."},
+"100010": {name:"Lôi Chấn", desc:"Sấm động. Chủ thay đổi mạnh. Có biến động nhưng là cơ hội bứt phá."},
+"010010": {name:"Thuỷ Khảm", desc:"Hiểm trở. Cần thận trọng. Không nên nóng vội."},
+"101101": {name:"Hoả Ly", desc:"Ánh sáng. Danh tiếng, văn chương, học hành, truyền thông tốt."},
+"110100": {name:"Trạch Đoài", desc:"Vui vẻ, giao tế tốt. Hợp kinh doanh, bán hàng."},
+"001011": {name:"Sơn Cấn", desc:"Dừng lại đúng lúc. Không nên tiến thêm."}
+};
+
+function luanQue() {
+
+    if (lines.length < 6) {
+        alert("Phải tung đủ 6 lần.");
+        return;
+    }
+
+    let binary = "";
+    let binaryChanged = "";
+
+    for (let i = 0; i < 6; i++) {
+        binary += convertToBinary(lines[i]);
+        binaryChanged += convertToBinaryChanged(lines[i]);
+    }
+
+    let mainHex = hexagrams[binary] || {name:"Quẻ khác", desc:"Quẻ chưa thêm dữ liệu."};
+    let changedHex = hexagrams[binaryChanged] || {name:"Quẻ biến", desc:"Quẻ biến đang mở rộng thêm."};
+
+    let detail = "<h2>🔮 Quẻ chính: " + mainHex.name + "</h2>";
+    detail += "<p>" + mainHex.desc + "</p>";
+
+    if (binary !== binaryChanged) {
+        detail += "<h3>➡ Quẻ biến: " + changedHex.name + "</h3>";
+        detail += "<p>" + changedHex.desc + "</p>";
+    }
+
+    detail += "<h3>📌 Phân tích theo từng mặt:</h3>";
+
+    detail += "<p><b>💼 Công việc:</b> Có xu hướng thay đổi tích cực nếu biết nắm thời cơ.</p>";
+    detail += "<p><b>💰 Tài lộc:</b> Tài chính tăng dần, tránh đầu tư nóng.</p>";
+    detail += "<p><b>❤️ Tình cảm:</b> Nếu độc thân dễ có người để ý. Có biến thì là duyên đến.</p>";
+    detail += "<p><b>⚖ Nhà nước – sự nghiệp ổn định:</b> Hợp môi trường kỷ luật, nên tiến chậm mà chắc.</p>";
+
+    document.getElementById("result").innerHTML = detail;
+}
+
+</script>
 </body>
 </html>
