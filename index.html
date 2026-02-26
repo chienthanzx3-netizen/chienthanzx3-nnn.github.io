@@ -8,9 +8,7 @@
 body{
     margin:0;
     font-family: "Times New Roman", serif;
-    background-image: url("https://images.unsplash.com/photo-1549887534-1541e9326642");
-    background-size: cover;
-    background-position: center;
+    background: radial-gradient(circle at top,#3b2a1a,#000);
     color:#FFD700;
     display:flex;
     justify-content:center;
@@ -19,7 +17,7 @@ body{
     text-align:center;
 }
 
-.overlay{
+.container{
     background: rgba(0,0,0,0.75);
     padding:30px;
     border-radius:15px;
@@ -51,6 +49,7 @@ button{
     border-radius:8px;
     cursor:pointer;
     margin:5px;
+    font-weight:bold;
 }
 
 button:hover{
@@ -59,7 +58,25 @@ button:hover{
 
 .coin{
     width:70px;
+    height:70px;
+    border-radius:50%;
+    background: radial-gradient(circle at 30% 30%, #ffd700, #b8860b);
+    border:4px solid #8b7500;
+    display:inline-block;
     margin:5px;
+    position:relative;
+    box-shadow:0 0 15px rgba(255,215,0,0.6);
+}
+
+.coin::after{
+    content:"";
+    position:absolute;
+    top:50%;
+    left:50%;
+    width:25px;
+    height:25px;
+    background:#000;
+    transform:translate(-50%,-50%);
 }
 
 .line{
@@ -77,7 +94,7 @@ button:hover{
 
 <body>
 
-<div class="overlay">
+<div class="container">
 
 <h1>☯ Gieo Quẻ Kinh Dịch ☯</h1>
 
@@ -96,8 +113,6 @@ button:hover{
 <script>
 
 let lines = [];
-
-const coinImg = "https://upload.wikimedia.org/wikipedia/commons/5/5e/Chinese_cash_coin_Qing_Dynasty.jpg";
 
 const hexagramList = [
 "Thuần Càn","Thuần Khôn","Thủy Lôi Truân","Sơn Thủy Mông","Thủy Thiên Nhu","Thiên Thủy Tụng",
@@ -129,7 +144,7 @@ function tung(){
     for(let i=0;i<3;i++){
         let coin = Math.random() < 0.5 ? 2 : 3;
         total += coin;
-        html += "<img class='coin' src='"+coinImg+"'>";
+        html += "<div class='coin'></div>";
     }
 
     lines.push(total);
@@ -187,9 +202,10 @@ function generateHexagram(){
     "<br>📜 Câu hỏi: "+(question || "Không nhập")+
     "<br><br>🔮 Quẻ Chính: <b>"+mainName+
     "</b><br>🔁 Quẻ Biến: <b>"+changedName+
-    "</b><br><br>✨ Luận giải:<br>"+
-    "Vận khí đang chuyển. Có hào biến nghĩa là tình thế thay đổi.<br>"+
-    "Giữ chính đạo, thuận thời sẽ cát.";
+    "</b><br><br>✨ Luận giải tổng quát:<br>"+
+    "Quẻ cho thấy thời vận đang chuyển động.<br>"+
+    "Có hào biến tức tình thế có thay đổi.<br>"+
+    "Giữ chính đạo, tiến chậm mà chắc sẽ cát.";
 }
 
 function reset(){
