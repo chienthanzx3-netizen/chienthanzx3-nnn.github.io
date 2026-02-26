@@ -7,17 +7,18 @@
 <style>
 body{
     margin:0;
-    height:100vh;
+    min-height:100vh;
     display:flex;
     justify-content:center;
     align-items:center;
     font-family:"Times New Roman",serif;
     background:#000;
-    overflow:hidden;
+    color:#FFD700;
 }
 
 /* ===== NỀN ===== */
-.background{
+body::before{
+    content:"";
     position:fixed;
     inset:0;
     background:
@@ -27,71 +28,72 @@ body{
     z-index:-1;
 }
 
-/* ===== KHUNG ===== */
 .container{
     text-align:center;
-    color:#FFD700;
+    width:95%;
+    max-width:900px;
 }
 
 /* ===== ĐỒNG XU ===== */
 .coin{
-    width:220px;
-    height:220px;
+    width:200px;
+    height:200px;
     border-radius:50%;
     background:
     radial-gradient(circle at 30% 30%, #f2d16b, #b8860b 45%, #6e4e00 80%);
     border:12px solid #4a3400;
     position:relative;
+    margin:auto;
     box-shadow:
     inset 0 0 40px rgba(0,0,0,0.7),
     0 0 40px rgba(255,215,0,0.4);
-    margin:auto;
 }
 
-/* Viền nổi */
-.coin::before{
-    content:"";
-    position:absolute;
-    inset:20px;
-    border-radius:50%;
-    border:6px solid rgba(0,0,0,0.4);
-}
-
-/* Lỗ vuông */
 .hole{
-    width:60px;
-    height:60px;
+    width:55px;
+    height:55px;
     background:#111;
     position:absolute;
     top:50%;
     left:50%;
     transform:translate(-50%,-50%);
-    box-shadow:inset 0 0 10px rgba(255,255,255,0.2);
 }
 
-/* Chữ 4 phía giống ảnh */
 .text{
     position:absolute;
-    font-size:32px;
+    font-size:30px;
     font-weight:bold;
     color:#3b2a00;
 }
 
-.top{ top:25px; left:50%; transform:translateX(-50%);}
-.bottom{ bottom:25px; left:50%; transform:translateX(-50%);}
-.left{ left:25px; top:50%; transform:translateY(-50%) rotate(-90deg);}
-.right{ right:25px; top:50%; transform:translateY(-50%) rotate(90deg);}
+.top{ top:20px; left:50%; transform:translateX(-50%);}
+.bottom{ bottom:20px; left:50%; transform:translateX(-50%);}
+.left{ left:20px; top:50%; transform:translateY(-50%) rotate(-90deg);}
+.right{ right:20px; top:50%; transform:translateY(-50%) rotate(90deg);}
 
-h1{
-    margin-top:40px;
-    text-shadow:0 0 20px gold;
+button{
+    margin-top:30px;
+    padding:12px 25px;
+    font-size:18px;
+    background:#8b6508;
+    color:white;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+button:hover{ background:#b8860b; }
+
+.result{
+    margin-top:30px;
+    text-align:left;
+    line-height:1.8;
+    font-size:17px;
 }
 </style>
 </head>
 
 <body>
-
-<div class="background"></div>
 
 <div class="container">
 
@@ -103,9 +105,59 @@ h1{
     <div class="hole"></div>
 </div>
 
-<h1>乾隆通寶</h1>
+<button onclick="gieo()">Gieo Quẻ</button>
+
+<div class="result" id="result"></div>
 
 </div>
+
+<script>
+
+const hexagrams = [
+"Thuần Càn – Thiên (乾為天)",
+"Thuần Khôn – Địa (坤為地)",
+"Thiên Phong Cấu (天風姤)",
+"Phong Thiên Tiểu Súc (風天小畜)",
+"Phong Tốn (巽為風)",
+"Thiên Hỏa Đồng Nhân (天火同人)",
+"Địa Sơn Khiêm (地山謙)",
+"Thủy Hỏa Ký Tế (水火既濟)"
+];
+
+function gieo(){
+
+let main = hexagrams[Math.floor(Math.random()*hexagrams.length)];
+let changed = hexagrams[Math.floor(Math.random()*hexagrams.length)];
+
+document.getElementById("result").innerHTML = `
+<b>📜 Quẻ Chính:</b> ${main}<br>
+<b>🔄 Quẻ Biến:</b> ${changed}<br><br>
+
+<b>🔮 Tổng Luận:</b><br>
+Quẻ cho thấy thời vận đang có sự chuyển động.
+Nếu quẻ thiên về Càn hoặc Khôn, đây là thời điểm trọng yếu,
+cần giữ chính đạo. Nếu thuộc nhóm Tốn, Cấu, Tiểu Súc,
+ám chỉ thời cơ nhỏ, phải nhẫn nại tích lũy.
+<br><br>
+
+<b>💰 Công Danh – Tài Lộc:</b><br>
+Không nên nóng vội. Tài lộc đến từ quá trình dài,
+tránh đầu cơ nhất thời.
+<br><br>
+
+<b>❤️ Tình Cảm:</b><br>
+Nếu thuận quẻ, nhân duyên có tiến triển.
+Nếu quẻ biến xung khắc, nên giữ bình tĩnh,
+tránh lời nói gây tổn thương.
+<br><br>
+
+<b>⚖ Lời Khuyên:</b><br>
+Lấy tĩnh làm chủ, thuận thiên thời,
+không cưỡng cầu nghịch thế.
+`;
+}
+
+</script>
 
 </body>
 </html>
